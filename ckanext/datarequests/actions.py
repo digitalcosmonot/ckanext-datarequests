@@ -17,19 +17,15 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with CKAN Data Requests Extension. If not, see <http://www.gnu.org/licenses/>.
 
-
-import ckan.lib.base as base
-import ckan.model as model
-import ckan.plugins as plugins
-import constants
 import datetime
 import cgi
-import db
 import logging
-import validator
-import ckan.lib.mailer as mailer
 
-from pylons import config
+from ckan.lib import base, mailer
+from ckan import plugins, model
+from ckan.common import config
+
+from . import constants, db, validator
 
 c = plugins.toolkit.c
 log = logging.getLogger(__name__)
@@ -141,7 +137,7 @@ def _get_datarequest_involved_users(context, datarequest_dict):
 
     if datarequest_dict['organization']:
         users.update([user['id'] for user in datarequest_dict['organization']['users']])
-    
+
     # Notifications are not sent to the user that performs the action
     users.discard(context['auth_user_obj'].id)
 
@@ -190,7 +186,7 @@ def create_datarequest(context, data_dict):
     :type organization_id: string
 
     :returns: A dict with the data request (id, user_id, title, description,
-        organization_id, open_time, accepted_dataset, close_time, closed, 
+        organization_id, open_time, accepted_dataset, close_time, closed,
         followers)
     :rtype: dict
     '''
@@ -214,7 +210,7 @@ def create_datarequest(context, data_dict):
     data_req.open_time = datetime.datetime.utcnow()
 
     session.add(data_req)
-    session.commit()    
+    session.commit()
 
     datarequest_dict = _dictize_datarequest(data_req)
 
@@ -239,7 +235,7 @@ def show_datarequest(context, data_dict):
     :type id: string
 
     :returns: A dict with the data request (id, user_id, title, description,
-        organization_id, open_time, accepted_dataset, close_time, closed, 
+        organization_id, open_time, accepted_dataset, close_time, closed,
         followers)
     :rtype: dict
     '''
@@ -291,7 +287,7 @@ def update_datarequest(context, data_dict):
     :type organization_id: string
 
     :returns: A dict with the data request (id, user_id, title, description,
-        organization_id, open_time, accepted_dataset, close_time, closed, 
+        organization_id, open_time, accepted_dataset, close_time, closed,
         followers)
     :rtype: dict
     '''
@@ -482,7 +478,7 @@ def delete_datarequest(context, data_dict):
     :type id: string
 
     :returns: A dict with the data request (id, user_id, title, description,
-        organization_id, open_time, accepted_dataset, close_time, closed, 
+        organization_id, open_time, accepted_dataset, close_time, closed,
         followers)
     :rtype: dict
     '''
@@ -527,7 +523,7 @@ def close_datarequest(context, data_dict):
     :type accepted_dataset_id: string
 
     :returns: A dict with the data request (id, user_id, title, description,
-        organization_id, open_time, accepted_dataset, close_time, closed, 
+        organization_id, open_time, accepted_dataset, close_time, closed,
         followers)
     :rtype: dict
 
@@ -808,11 +804,11 @@ def delete_datarequest_comment(context, data_dict):
 
 def follow_datarequest(context, data_dict):
     '''
-    Action to follow a data request. Access rights will be cheked before 
+    Action to follow a data request. Access rights will be cheked before
     following a datarequest and a NotAuthorized exception will be risen if the
     user is not allowed to follow the given datarequest. ValidationError will
     be risen if the datarequest ID is not included or if the user is already
-    following the datarequest. ObjectNotFound will be risen if the given 
+    following the datarequest. ObjectNotFound will be risen if the given
     datarequest does not exist.
 
     :param id: The ID of the datarequest to be followed
@@ -859,11 +855,11 @@ def follow_datarequest(context, data_dict):
 
 def unfollow_datarequest(context, data_dict):
     '''
-    Action to unfollow a data request. Access rights will be cheked before 
+    Action to unfollow a data request. Access rights will be cheked before
     unfollowing a datarequest and a NotAuthorized exception will be risen if
     the user is not allowed to unfollow the given datarequest. ValidationError
-    will be risen if the datarequest ID is not included in the request. 
-    ObjectNotFound will be risen if the user is not following the given 
+    will be risen if the datarequest ID is not included in the request.
+    ObjectNotFound will be risen if the user is not following the given
     datarequest.
 
     :param id: The ID of the datarequest to be unfollowed

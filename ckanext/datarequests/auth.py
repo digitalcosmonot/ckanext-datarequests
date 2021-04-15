@@ -17,8 +17,9 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with CKAN Data Requests Extension. If not, see <http://www.gnu.org/licenses/>.
 
-import constants
 from ckan.plugins import toolkit as tk
+
+from . import constants
 
 
 def create_datarequest(context, data_dict):

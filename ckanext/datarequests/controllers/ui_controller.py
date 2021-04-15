@@ -18,17 +18,17 @@
 # along with CKAN Data Requests Extension. If not, see <http://www.gnu.org/licenses/>.
 
 import logging
+import functools
+import re
+from urllib.parse import urlencode
 
 import ckan.lib.base as base
 import ckan.model as model
 import ckan.plugins as plugins
 import ckan.lib.helpers as helpers
-import ckanext.datarequests.constants as constants
-import functools
-import re
-
 from ckan.common import request
-from urllib import urlencode
+
+from .. import constants
 
 
 _link = re.compile(r'(?:(https?://)|(www\.))(\S+\b/?)([!"#$%&\'()*+,\-./:;<=>?@[\\\]^_`{|}~]*)(\s|$)', re.I)
@@ -54,7 +54,7 @@ def _encode_params(params):
 
 def url_with_params(url, params):
     params = _encode_params(params)
-    return url + u'?' + urlencode(params)
+    return '{}?{}'.format(url, urlencode(params))
 
 
 def search_url(params):
@@ -263,7 +263,7 @@ class DataRequestsUI(base.BaseController):
             log.warn(e)
             tk.abort(404, tk._('Data Request %s not found') % id)
         except tk.NotAuthorized as e:
-            log.warn(e) 
+            log.warn(e)
             tk.abort(403, tk._('You are not authorized to delete the Data Request %s'
                                % id))
 
@@ -425,4 +425,3 @@ class DataRequestsUI(base.BaseController):
     def unfollow(self, datarequest_id):
         # Method is not called
         pass
-        

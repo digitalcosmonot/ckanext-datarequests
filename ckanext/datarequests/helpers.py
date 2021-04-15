@@ -17,12 +17,11 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with CKAN Data Requests Extension. If not, see <http://www.gnu.org/licenses/>.
 
-import ckan.model as model
-import ckan.plugins.toolkit as tk
-import db
-
+from ckan import model
+from ckan.plugins import toolkit as tk
 from ckan.common import c
 
+from . import db
 
 def get_comments_number(datarequest_id):
     # DB should be intialized

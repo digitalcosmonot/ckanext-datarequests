@@ -17,12 +17,13 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with CKAN Data Requests Extension. If not, see <http://www.gnu.org/licenses/>.
 
-import constants
-import sqlalchemy as sa
 import uuid
 
+import sqlalchemy as sa
 from sqlalchemy import func
 from sqlalchemy.sql.expression import or_
+
+from . import constants
 
 DataRequest = None
 Comment = None
@@ -174,4 +175,3 @@ def init_db(model):
         followers_table.create(checkfirst=True)
 
         model.meta.mapper(DataRequestFollower, followers_table,)
-
