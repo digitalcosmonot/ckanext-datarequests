@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright (c) 2015-2016 CoNWeT Lab., Universidad Politécnica de Madrid
 
 # This file is part of CKAN Data Requests Extension.
@@ -22,14 +20,13 @@ import cgi
 import logging
 
 from ckan.lib import base, mailer
-from ckan import plugins, model
+from ckan import model
+from ckan.plugins import toolkit as tk
 from ckan.common import config
 
 from . import constants, db, validator
 
-c = plugins.toolkit.c
 log = logging.getLogger(__name__)
-tk = plugins.toolkit
 
 # Avoid user_show lag
 USERS_CACHE = {}
@@ -108,7 +105,6 @@ def _undictize_datarequest_basic(data_request, data_dict):
 
 
 def _dictize_comment(comment):
-
     return {
         'id': comment.id,
         'datarequest_id': comment.datarequest_id,

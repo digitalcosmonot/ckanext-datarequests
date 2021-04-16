@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright (c) 2015 CoNWeT Lab., Universidad Politécnica de Madrid
 
 # This file is part of CKAN Data Requests Extension.
@@ -22,6 +20,7 @@ from ckan.plugins import toolkit as tk
 from ckan.common import c
 
 from . import db
+
 
 def get_comments_number(datarequest_id):
     # DB should be intialized

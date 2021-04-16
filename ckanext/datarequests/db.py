@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright (c) 2015-2016 CoNWeT Lab., Universidad Politécnica de Madrid
 
 # This file is part of CKAN Data Requests Extension.
@@ -88,11 +86,15 @@ def init_db(model):
         DataRequest = _DataRequest
 
         # FIXME: References to the other tables...
-        datarequests_table = sa.Table('datarequests', model.meta.metadata,
+        datarequests_table = sa.Table(
+            'datarequests',
+            model.meta.metadata,
             sa.Column('user_id', sa.types.UnicodeText, primary_key=False, default=u''),
             sa.Column('id', sa.types.UnicodeText, primary_key=True, default=uuid4),
             sa.Column('title', sa.types.Unicode(constants.NAME_MAX_LENGTH), primary_key=True, default=u''),
-            sa.Column('description', sa.types.Unicode(constants.DESCRIPTION_MAX_LENGTH), primary_key=False, default=u''),
+            sa.Column(
+                'description', sa.types.Unicode(constants.DESCRIPTION_MAX_LENGTH), primary_key=False, default=u''
+            ),
             sa.Column('organization_id', sa.types.UnicodeText, primary_key=False, default=None),
             sa.Column('open_time', sa.types.DateTime, primary_key=False, default=None),
             sa.Column('accepted_dataset_id', sa.types.UnicodeText, primary_key=False, default=None),
@@ -104,7 +106,6 @@ def init_db(model):
         datarequests_table.create(checkfirst=True)
 
         model.meta.mapper(DataRequest, datarequests_table,)
-
 
     if Comment is None:
         class _Comment(model.DomainObject):
@@ -132,7 +133,9 @@ def init_db(model):
         Comment = _Comment
 
         # FIXME: References to the other tables...
-        comments_table = sa.Table('datarequests_comments', model.meta.metadata,
+        comments_table = sa.Table(
+            'datarequests_comments',
+            model.meta.metadata,
             sa.Column('id', sa.types.UnicodeText, primary_key=True, default=uuid4),
             sa.Column('user_id', sa.types.UnicodeText, primary_key=False, default=u''),
             sa.Column('datarequest_id', sa.types.UnicodeText, primary_key=True, default=uuid4),
@@ -164,7 +167,9 @@ def init_db(model):
         DataRequestFollower = _DataRequestFollower
 
         # FIXME: References to the other tables...
-        followers_table = sa.Table('datarequests_followers', model.meta.metadata,
+        followers_table = sa.Table(
+            'datarequests_followers',
+            model.meta.metadata,
             sa.Column('id', sa.types.UnicodeText, primary_key=True, default=uuid4),
             sa.Column('user_id', sa.types.UnicodeText, primary_key=False, default=u''),
             sa.Column('datarequest_id', sa.types.UnicodeText, primary_key=True, default=uuid4),

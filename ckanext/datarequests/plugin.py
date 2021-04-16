@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright (c) 2015-2016 CoNWeT Lab., Universidad Politécnica de Madrid
 
 # This file is part of CKAN Data Requests Extension.
@@ -25,14 +23,19 @@ from ckan import plugins as p
 from ckan.plugins import toolkit as tk
 from ckan.common import config
 from ckan.lib import helpers as h
+from flask import Blueprint
 
 from . import auth, actions, constants, helpers
+from .controllers import ui_controller
+
+datarequests_bp = Blueprint("datarequests", __name__)
 
 
 def get_config_bool_value(config_name, default_value=False):
     value = config.get(config_name, default_value)
     value = value if type(value) == bool else value != 'False'
     return value
+
 
 def is_fontawesome_4():
     if hasattr(h, 'ckan_version'):
@@ -41,8 +44,10 @@ def is_fontawesome_4():
     else:
         return False
 
+
 def get_plus_icon():
     return 'plus-square' if is_fontawesome_4() else 'plus-sign-alt'
+
 
 def get_question_icon():
     return 'question-circle' if is_fontawesome_4() else 'question-sign'
@@ -53,7 +58,7 @@ class DataRequestsPlugin(p.SingletonPlugin):
     p.implements(p.IActions)
     p.implements(p.IAuthFunctions)
     p.implements(p.IConfigurer)
-    p.implements(p.IRoutes, inherit=True)
+    p.implements(p.IBlueprint)
     p.implements(p.ITemplateHelpers)
 
     # ITranslation only available in 2.5+
@@ -68,11 +73,10 @@ class DataRequestsPlugin(p.SingletonPlugin):
         self.name = 'datarequests'
         self.is_description_required = get_config_bool_value('ckan.datarequests.description_required', False)
 
-    ######################################################################
-    ############################## IACTIONS ##############################
-    ######################################################################
-
     def get_actions(self):
+        """
+        IActions
+        """
         additional_actions = {
             constants.CREATE_DATAREQUEST: actions.create_datarequest,
             constants.SHOW_DATAREQUEST: actions.show_datarequest,
@@ -93,11 +97,10 @@ class DataRequestsPlugin(p.SingletonPlugin):
 
         return additional_actions
 
-    ######################################################################
-    ########################### AUTH FUNCTIONS ###########################
-    ######################################################################
-
     def get_auth_functions(self):
+        """
+        Auth functions
+        """
         auth_functions = {
             constants.CREATE_DATAREQUEST: auth.create_datarequest,
             constants.SHOW_DATAREQUEST: auth.show_datarequest,
@@ -118,11 +121,10 @@ class DataRequestsPlugin(p.SingletonPlugin):
 
         return auth_functions
 
-    ######################################################################
-    ############################ ICONFIGURER #############################
-    ######################################################################
-
     def update_config(self, config):
+        """
+        IConfigurer
+        """
         # Add this plugin's templates dir to CKAN's extra_template_paths, so
         # that CKAN will use this plugin's custom templates.
         tk.add_template_directory(config, 'templates')
@@ -133,80 +135,40 @@ class DataRequestsPlugin(p.SingletonPlugin):
         # Register this plugin's fanstatic directory with CKAN.
         tk.add_resource('fanstatic', 'datarequest')
 
-    ######################################################################
-    ############################## IROUTES ###############################
-    ######################################################################
-
-    def before_map(self, m):
-        # Data Requests index
-        m.connect('datarequests_index', "/%s" % constants.DATAREQUESTS_MAIN_PATH,
-                  controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI',
-                  action='index', conditions=dict(method=['GET']))
-
-        # Create a Data Request
-        m.connect('/%s/new' % constants.DATAREQUESTS_MAIN_PATH,
-                  controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI',
-                  action='new', conditions=dict(method=['GET', 'POST']))
-
-        # Show a Data Request
-        m.connect('show_datarequest', '/%s/{id}' % constants.DATAREQUESTS_MAIN_PATH,
-                  controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI',
-                  action='show', conditions=dict(method=['GET']), ckan_icon=get_question_icon())
-
-        # Update a Data Request
-        m.connect('/%s/edit/{id}' % constants.DATAREQUESTS_MAIN_PATH,
-                  controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI',
-                  action='update', conditions=dict(method=['GET', 'POST']))
-
-        # Delete a Data Request
-        m.connect('/%s/delete/{id}' % constants.DATAREQUESTS_MAIN_PATH,
-                  controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI',
-                  action='delete', conditions=dict(method=['POST']))
-
-        # Close a Data Request
-        m.connect('/%s/close/{id}' % constants.DATAREQUESTS_MAIN_PATH,
-                  controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI',
-                  action='close', conditions=dict(method=['GET', 'POST']))
-
-        # Data Request that belongs to an organization
-        m.connect('organization_datarequests', '/organization/%s/{id}' % constants.DATAREQUESTS_MAIN_PATH,
-                  controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI',
-                  action='organization_datarequests', conditions=dict(method=['GET']),
-                  ckan_icon=get_question_icon())
-
-        # Data Request that belongs to an user
-        m.connect('user_datarequests', '/user/%s/{id}' % constants.DATAREQUESTS_MAIN_PATH,
-                  controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI',
-                  action='user_datarequests', conditions=dict(method=['GET']),
-                  ckan_icon=get_question_icon())
-
-        # Follow & Unfollow
-        m.connect('/%s/follow/{id}' % constants.DATAREQUESTS_MAIN_PATH,
-                  controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI',
-                  action='follow', conditions=dict(method=['POST']))
-
-        m.connect('/%s/unfollow/{id}' % constants.DATAREQUESTS_MAIN_PATH,
-                  controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI',
-                  action='unfollow', conditions=dict(method=['POST']))
+    def get_blueprint(self):
+        """
+        IBlueprint
+        """
+        rules = [
+            ("/{}".format(constants.DATAREQUESTS_MAIN_PATH), "index", ui_controller.index),
+            ("/{}/new".format(constants.DATAREQUESTS_MAIN_PATH), "new", ui_controller.new),
+            ("/{}/<id>".format(constants.DATAREQUESTS_MAIN_PATH), "show", ui_controller.show),
+            ("/{}/edit/<id>".format(constants.DATAREQUESTS_MAIN_PATH), "update", ui_controller.update),
+            ("/{}/delete/<id>".format(constants.DATAREQUESTS_MAIN_PATH), "delete", ui_controller.delete),
+            ("/{}/close/<id>".format(constants.DATAREQUESTS_MAIN_PATH), "close", ui_controller.close),
+            ("/{}/follow/<datarequest_id>".format(constants.DATAREQUESTS_MAIN_PATH), "follow", ui_controller.follow),
+            ("/{}/unfollow/<datarequest_id>".format(constants.DATAREQUESTS_MAIN_PATH), "unfollow", ui_controller.unfollow),
+            ("/organization/{}/<id>".format(constants.DATAREQUESTS_MAIN_PATH), "organization", ui_controller.organization),
+            ("/user/{}/<id>".format(constants.DATAREQUESTS_MAIN_PATH), "user", ui_controller.user),
+        ]
 
         if self.comments_enabled:
-            # Comment, update and view comments (of) a Data Request
-            m.connect('comment_datarequest', '/%s/comment/{id}' % constants.DATAREQUESTS_MAIN_PATH,
-                      controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI',
-                      action='comment', conditions=dict(method=['GET', 'POST']), ckan_icon='comment')
+            rules.extend(
+                [
+                    ("/{}/comment/<id>".format(constants.DATAREQUESTS_MAIN_PATH), "comment", ui_controller.comment),
+                    ("/{}/comment/<datarequest_id>/delete/<comment_id>".format(constants.DATAREQUESTS_MAIN_PATH), "delete_comment", ui_controller.delete_comment),
+                ]
+            )
 
-            # Delete data request
-            m.connect('/%s/comment/{datarequest_id}/delete/{comment_id}' % constants.DATAREQUESTS_MAIN_PATH,
-                      controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI',
-                      action='delete_comment', conditions=dict(method=['GET', 'POST']))
+        for rule in rules:
+            datarequests_bp.add_url_rule(rule[0], endpoint=rule[1], view_func=rule[2])
 
-        return m
-
-    ######################################################################
-    ######################### ITEMPLATESHELPER ###########################
-    ######################################################################
+        return [datarequests_bp]
 
     def get_helpers(self):
+        """
+        ITemplates helper
+        """
         return {
             'show_comments_tab': lambda: self.comments_enabled,
             'get_comments_number': helpers.get_comments_number,
@@ -217,10 +179,6 @@ class DataRequestsPlugin(p.SingletonPlugin):
             'is_following_datarequest': helpers.is_following_datarequest,
             'is_description_required': self.is_description_required
         }
-
-    ######################################################################
-    ########################### ITRANSLATION #############################
-    ######################################################################
 
     # The following methods are copied from ckan.lib.plugins.DefaultTranslation
     # and have been modified to fix a bug in CKAN 2.5.1 that prevents CKAN from
@@ -245,9 +203,10 @@ class DataRequestsPlugin(p.SingletonPlugin):
         plugin
         '''
         directory = self.i18n_directory()
-        return [ d for
-                 d in os.listdir(directory)
-                 if os.path.isdir(os.path.join(directory, d))
+        return [
+            d for
+            d in os.listdir(directory)
+            if os.path.isdir(os.path.join(directory, d))
         ]
 
     def i18n_domain(self):
