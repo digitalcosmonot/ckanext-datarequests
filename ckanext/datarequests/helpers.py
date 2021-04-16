@@ -16,8 +16,8 @@
 # along with CKAN Data Requests Extension. If not, see <http://www.gnu.org/licenses/>.
 
 from ckan import model
-from ckan.plugins import toolkit as tk
 from ckan.common import c
+from ckan.plugins import toolkit as tk
 
 from . import db
 

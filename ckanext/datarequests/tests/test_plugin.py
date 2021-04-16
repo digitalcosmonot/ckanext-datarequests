@@ -17,12 +17,13 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with CKAN Data Requests Extension. If not, see <http://www.gnu.org/licenses/>.
 
-import ckanext.datarequests.plugin as plugin
-import ckanext.datarequests.constants as constants
 import unittest
 
 from mock import MagicMock, patch
 from nose_parameterized import parameterized
+
+import ckanext.datarequests.constants as constants
+import ckanext.datarequests.plugin as plugin
 
 TOTAL_ACTIONS = 13
 COMMENTS_ACTIONS = 5

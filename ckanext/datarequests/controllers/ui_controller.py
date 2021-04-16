@@ -15,15 +15,15 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with CKAN Data Requests Extension. If not, see <http://www.gnu.org/licenses/>.
 
-import logging
 import functools
+import logging
 import re
 from urllib.parse import urlencode
 
 from ckan import model
 from ckan.lib import helpers
 from ckan.plugins import toolkit as tk
-from ckan.plugins.toolkit import request, g
+from ckan.plugins.toolkit import g, request
 
 from .. import constants
 

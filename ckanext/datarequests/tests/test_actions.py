@@ -17,14 +17,15 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with CKAN Data Requests Extension. If not, see <http://www.gnu.org/licenses/>.
 
-import ckanext.datarequests.actions as actions
-import ckanext.datarequests.constants as constants
 import datetime
-import test_actions_data as test_data
 import unittest
 
+import test_actions_data as test_data
 from mock import MagicMock, patch
 from nose_parameterized import parameterized
+
+import ckanext.datarequests.actions as actions
+import ckanext.datarequests.constants as constants
 
 
 class ActionsTest(unittest.TestCase):

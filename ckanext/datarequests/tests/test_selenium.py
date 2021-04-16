@@ -17,20 +17,21 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with CKAN Data Requests Extension.  If not, see <http://www.gnu.org/licenses/>.
 
-from nose_parameterized import parameterized
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.support.ui import Select
-from subprocess import Popen
-
-import ckan.lib.search.index as search_index
-import ckan.model as model
-import ckanext.datarequests.db as db
 import os
 import random
 import string
 import unittest
+from subprocess import Popen
+
+import ckan.lib.search.index as search_index
+import ckan.model as model
+from nose_parameterized import parameterized
+from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select
+
+import ckanext.datarequests.db as db
 
 
 def _generate_random_string(length):

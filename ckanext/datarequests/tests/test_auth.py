@@ -18,12 +18,13 @@
 # along with CKAN Data Requests Extension. If not, see <http://www.gnu.org/licenses/>.
 
 
-import ckanext.datarequests.constants as constants
-import ckanext.datarequests.auth as auth
 import unittest
 
 from mock import MagicMock
 from nose_parameterized import parameterized
+
+import ckanext.datarequests.auth as auth
+import ckanext.datarequests.constants as constants
 
 # Needed for the test
 context = {

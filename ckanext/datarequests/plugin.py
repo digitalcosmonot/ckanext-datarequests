@@ -20,12 +20,12 @@ import sys
 from functools import partial
 
 from ckan import plugins as p
-from ckan.plugins import toolkit as tk
 from ckan.common import config
 from ckan.lib import helpers as h
+from ckan.plugins import toolkit as tk
 from flask import Blueprint
 
-from . import auth, actions, constants, helpers
+from . import actions, auth, constants, helpers
 from .controllers import ui_controller
 
 datarequests_bp = Blueprint("datarequests", __name__)

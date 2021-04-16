@@ -17,12 +17,13 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with CKAN Data Requests Extension. If not, see <http://www.gnu.org/licenses/>.
 
-import ckanext.datarequests.validator as validator
-import unittest
 import random
+import unittest
 
 from mock import MagicMock
 from nose_parameterized import parameterized
+
+import ckanext.datarequests.validator as validator
 
 
 def generate_string(length):

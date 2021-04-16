@@ -17,8 +17,10 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with CKAN Data Requests Extension. If not, see <http://www.gnu.org/licenses/>.
 
-from setuptools import setup, find_packages
-import sys, os
+import os
+import sys
+
+from setuptools import find_packages, setup
 
 version = '1.1.0'
 

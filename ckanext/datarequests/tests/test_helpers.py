@@ -17,10 +17,11 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with CKAN Data Requests Extension. If not, see <http://www.gnu.org/licenses/>.
 
-import ckanext.datarequests.helpers as helpers
 import unittest
 
 from mock import MagicMock, patch
+
+import ckanext.datarequests.helpers as helpers
 
 
 class HelpersTest(unittest.TestCase):

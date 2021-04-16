@@ -18,10 +18,11 @@
 # along with CKAN Data Requests Extension. If not, see <http://www.gnu.org/licenses/>.
 
 import unittest
-import ckanext.datarequests.db as db
 
 from mock import MagicMock
 from nose_parameterized import parameterized
+
+import ckanext.datarequests.db as db
 
 
 class DBTest(unittest.TestCase):

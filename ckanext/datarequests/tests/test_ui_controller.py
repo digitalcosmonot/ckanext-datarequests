@@ -17,13 +17,13 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with CKAN Data Requests Extension. If not, see <http://www.gnu.org/licenses/>.
 
-import ckanext.datarequests.constants as constants
-import ckanext.datarequests.controllers.ui_controller as controller
 import unittest
 
 from mock import MagicMock
 from nose_parameterized import parameterized
 
+import ckanext.datarequests.constants as constants
+import ckanext.datarequests.controllers.ui_controller as controller
 
 INDEX_FUNCTION = 'index'
 ORGANIZATION_DATAREQUESTS_FUNCTION = 'organization_datarequests'

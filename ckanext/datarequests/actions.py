@@ -15,14 +15,14 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with CKAN Data Requests Extension. If not, see <http://www.gnu.org/licenses/>.
 
-import datetime
 import cgi
+import datetime
 import logging
 
-from ckan.lib import base, mailer
 from ckan import model
-from ckan.plugins import toolkit as tk
 from ckan.common import config
+from ckan.lib import base, mailer
+from ckan.plugins import toolkit as tk
 
 from . import constants, db, validator
 
