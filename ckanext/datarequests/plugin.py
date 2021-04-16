@@ -33,12 +33,12 @@ datarequests_bp = Blueprint("datarequests", __name__)
 
 def get_config_bool_value(config_name, default_value=False):
     value = config.get(config_name, default_value)
-    value = value if type(value) == bool else value != 'False'
+    value = value if type(value) == bool else value != "False"
     return value
 
 
 def is_fontawesome_4():
-    if hasattr(h, 'ckan_version'):
+    if hasattr(h, "ckan_version"):
         ckan_version = float(h.ckan_version()[0:3])
         return ckan_version >= 2.7
     else:
@@ -46,11 +46,11 @@ def is_fontawesome_4():
 
 
 def get_plus_icon():
-    return 'plus-square' if is_fontawesome_4() else 'plus-sign-alt'
+    return "plus-square" if is_fontawesome_4() else "plus-sign-alt"
 
 
 def get_question_icon():
-    return 'question-circle' if is_fontawesome_4() else 'question-sign'
+    return "question-circle" if is_fontawesome_4() else "question-sign"
 
 
 class DataRequestsPlugin(p.SingletonPlugin):
@@ -68,10 +68,10 @@ class DataRequestsPlugin(p.SingletonPlugin):
         pass
 
     def __init__(self, name=None):
-        self.comments_enabled = get_config_bool_value('ckan.datarequests.comments', True)
-        self._show_datarequests_badge = get_config_bool_value('ckan.datarequests.show_datarequests_badge')
-        self.name = 'datarequests'
-        self.is_description_required = get_config_bool_value('ckan.datarequests.description_required', False)
+        self.comments_enabled = get_config_bool_value("ckan.datarequests.comments", True)
+        self._show_datarequests_badge = get_config_bool_value("ckan.datarequests.show_datarequests_badge")
+        self.name = "datarequests"
+        self.is_description_required = get_config_bool_value("ckan.datarequests.description_required", False)
 
     def get_actions(self):
         """
@@ -127,13 +127,13 @@ class DataRequestsPlugin(p.SingletonPlugin):
         """
         # Add this plugin's templates dir to CKAN's extra_template_paths, so
         # that CKAN will use this plugin's custom templates.
-        tk.add_template_directory(config, 'templates')
+        tk.add_template_directory(config, "templates")
 
         # Register this plugin's fanstatic directory with CKAN.
-        tk.add_public_directory(config, 'public')
+        tk.add_public_directory(config, "public")
 
         # Register this plugin's fanstatic directory with CKAN.
-        tk.add_resource('fanstatic', 'datarequest')
+        tk.add_resource("fanstatic", "datarequest")
 
     def get_blueprint(self):
         """
@@ -147,8 +147,16 @@ class DataRequestsPlugin(p.SingletonPlugin):
             ("/{}/delete/<id>".format(constants.DATAREQUESTS_MAIN_PATH), "delete", ui_controller.delete),
             ("/{}/close/<id>".format(constants.DATAREQUESTS_MAIN_PATH), "close", ui_controller.close),
             ("/{}/follow/<datarequest_id>".format(constants.DATAREQUESTS_MAIN_PATH), "follow", ui_controller.follow),
-            ("/{}/unfollow/<datarequest_id>".format(constants.DATAREQUESTS_MAIN_PATH), "unfollow", ui_controller.unfollow),
-            ("/organization/{}/<id>".format(constants.DATAREQUESTS_MAIN_PATH), "organization", ui_controller.organization),
+            (
+                "/{}/unfollow/<datarequest_id>".format(constants.DATAREQUESTS_MAIN_PATH),
+                "unfollow",
+                ui_controller.unfollow,
+            ),
+            (
+                "/organization/{}/<id>".format(constants.DATAREQUESTS_MAIN_PATH),
+                "organization",
+                ui_controller.organization,
+            ),
             ("/user/{}/<id>".format(constants.DATAREQUESTS_MAIN_PATH), "user", ui_controller.user),
         ]
 
@@ -156,7 +164,11 @@ class DataRequestsPlugin(p.SingletonPlugin):
             rules.extend(
                 [
                     ("/{}/comment/<id>".format(constants.DATAREQUESTS_MAIN_PATH), "comment", ui_controller.comment),
-                    ("/{}/comment/<datarequest_id>/delete/<comment_id>".format(constants.DATAREQUESTS_MAIN_PATH), "delete_comment", ui_controller.delete_comment),
+                    (
+                        "/{}/comment/<datarequest_id>/delete/<comment_id>".format(constants.DATAREQUESTS_MAIN_PATH),
+                        "delete_comment",
+                        ui_controller.delete_comment,
+                    ),
                 ]
             )
 
@@ -170,14 +182,14 @@ class DataRequestsPlugin(p.SingletonPlugin):
         ITemplates helper
         """
         return {
-            'show_comments_tab': lambda: self.comments_enabled,
-            'get_comments_number': helpers.get_comments_number,
-            'get_comments_badge': helpers.get_comments_badge,
-            'get_open_datarequests_number': helpers.get_open_datarequests_number,
-            'get_open_datarequests_badge': partial(helpers.get_open_datarequests_badge, self._show_datarequests_badge),
-            'get_plus_icon': get_plus_icon,
-            'is_following_datarequest': helpers.is_following_datarequest,
-            'is_description_required': self.is_description_required
+            "show_comments_tab": lambda: self.comments_enabled,
+            "get_comments_number": helpers.get_comments_number,
+            "get_comments_badge": helpers.get_comments_badge,
+            "get_open_datarequests_number": helpers.get_open_datarequests_number,
+            "get_open_datarequests_badge": partial(helpers.get_open_datarequests_badge, self._show_datarequests_badge),
+            "get_plus_icon": get_plus_icon,
+            "is_following_datarequest": helpers.is_following_datarequest,
+            "is_description_required": self.is_description_required,
         }
 
     # The following methods are copied from ckan.lib.plugins.DefaultTranslation
@@ -186,32 +198,28 @@ class DataRequestsPlugin(p.SingletonPlugin):
     # Requests can be used even if Itranslation isn't available (less than 2.5)
 
     def i18n_directory(self):
-        '''Change the directory of the *.mo translation files
+        """Change the directory of the *.mo translation files
         The default implementation assumes the plugin is
         ckanext/myplugin/plugin.py and the translations are stored in
         i18n/
-        '''
+        """
         # assume plugin is called ckanext.<myplugin>.<...>.PluginClass
-        extension_module_name = '.'.join(self.__module__.split('.')[:3])
+        extension_module_name = ".".join(self.__module__.split(".")[:3])
         module = sys.modules[extension_module_name]
-        return os.path.join(os.path.dirname(module.__file__), 'i18n')
+        return os.path.join(os.path.dirname(module.__file__), "i18n")
 
     def i18n_locales(self):
-        '''Change the list of locales that this plugin handles
+        """Change the list of locales that this plugin handles
         By default the will assume any directory in subdirectory in the
         directory defined by self.directory() is a locale handled by this
         plugin
-        '''
+        """
         directory = self.i18n_directory()
-        return [
-            d for
-            d in os.listdir(directory)
-            if os.path.isdir(os.path.join(directory, d))
-        ]
+        return [d for d in os.listdir(directory) if os.path.isdir(os.path.join(directory, d))]
 
     def i18n_domain(self):
-        '''Change the gettext domain handled by this plugin
+        """Change the gettext domain handled by this plugin
         This implementation assumes the gettext domain is
         ckanext-{extension name}, hence your pot, po and mo files should be
-        named ckanext-{extension name}.mo'''
-        return 'ckanext-{name}'.format(name=self.name)
+        named ckanext-{extension name}.mo"""
+        return "ckanext-{name}".format(name=self.name)

@@ -37,7 +37,7 @@ def _get_user(user_id):
         if user_id in USERS_CACHE:
             return USERS_CACHE[user_id]
         else:
-            user = tk.get_action('user_show')({'ignore_auth': True}, {'id': user_id})
+            user = tk.get_action("user_show")({"ignore_auth": True}, {"id": user_id})
             USERS_CACHE[user_id] = user
             return user
     except Exception as e:
@@ -46,16 +46,16 @@ def _get_user(user_id):
 
 def _get_organization(organization_id):
     try:
-        organization_show = tk.get_action('organization_show')
-        return organization_show({'ignore_auth': True}, {'id': organization_id})
+        organization_show = tk.get_action("organization_show")
+        return organization_show({"ignore_auth": True}, {"id": organization_id})
     except Exception as e:
         log.warn(e)
 
 
 def _get_package(package_id):
     try:
-        package_show = tk.get_action('package_show')
-        return package_show({'ignore_auth': True}, {'id': package_id})
+        package_show = tk.get_action("package_show")
+        return package_show({"ignore_auth": True}, {"id": package_id})
     except Exception as e:
         log.warn(e)
 
@@ -70,72 +70,73 @@ def _dictize_datarequest(datarequest):
 
     # Convert the data request into a dict
     data_dict = {
-        'id': datarequest.id,
-        'user_id': datarequest.user_id,
-        'title': datarequest.title,
-        'description': datarequest.description,
-        'organization_id': datarequest.organization_id,
-        'open_time': open_time,
-        'accepted_dataset_id': datarequest.accepted_dataset_id,
-        'close_time': close_time,
-        'closed': datarequest.closed,
-        'user': _get_user(datarequest.user_id),
-        'organization': None,
-        'accepted_dataset': None,
-        'followers': 0
+        "id": datarequest.id,
+        "user_id": datarequest.user_id,
+        "title": datarequest.title,
+        "description": datarequest.description,
+        "organization_id": datarequest.organization_id,
+        "open_time": open_time,
+        "accepted_dataset_id": datarequest.accepted_dataset_id,
+        "close_time": close_time,
+        "closed": datarequest.closed,
+        "user": _get_user(datarequest.user_id),
+        "organization": None,
+        "accepted_dataset": None,
+        "followers": 0,
     }
 
     if datarequest.organization_id:
-        data_dict['organization'] = _get_organization(datarequest.organization_id)
+        data_dict["organization"] = _get_organization(datarequest.organization_id)
 
     if datarequest.accepted_dataset_id:
-        data_dict['accepted_dataset'] = _get_package(datarequest.accepted_dataset_id)
+        data_dict["accepted_dataset"] = _get_package(datarequest.accepted_dataset_id)
 
-    data_dict['followers'] = db.DataRequestFollower.get_datarequest_followers_number(
-        datarequest_id=datarequest.id)
+    data_dict["followers"] = db.DataRequestFollower.get_datarequest_followers_number(datarequest_id=datarequest.id)
 
     return data_dict
 
 
 def _undictize_datarequest_basic(data_request, data_dict):
-    data_request.title = data_dict['title']
-    data_request.description = data_dict['description']
-    organization = data_dict['organization_id']
+    data_request.title = data_dict["title"]
+    data_request.description = data_dict["description"]
+    organization = data_dict["organization_id"]
     data_request.organization_id = organization if organization else None
 
 
 def _dictize_comment(comment):
     return {
-        'id': comment.id,
-        'datarequest_id': comment.datarequest_id,
-        'user_id': comment.user_id,
-        'comment': comment.comment,
-        'time': str(comment.time),
-        'user': _get_user(comment.user_id)
+        "id": comment.id,
+        "datarequest_id": comment.datarequest_id,
+        "user_id": comment.user_id,
+        "comment": comment.comment,
+        "time": str(comment.time),
+        "user": _get_user(comment.user_id),
     }
 
 
 def _undictize_comment_basic(comment, data_dict):
-    comment.comment = cgi.escape(data_dict.get('comment', ''))
-    comment.datarequest_id = data_dict.get('datarequest_id', '')
+    comment.comment = cgi.escape(data_dict.get("comment", ""))
+    comment.datarequest_id = data_dict.get("datarequest_id", "")
 
 
 def _get_datarequest_involved_users(context, datarequest_dict):
 
-    datarequest_id = datarequest_dict['id']
-    new_context = {'ignore_auth': True, 'model': context['model'] }
+    datarequest_id = datarequest_dict["id"]
+    new_context = {"ignore_auth": True, "model": context["model"]}
 
     # Creator + Followers + People who has commented + Organization Staff
     users = set()
-    users.add(datarequest_dict['user_id'])
+    users.add(datarequest_dict["user_id"])
     users.update([follower.user_id for follower in db.DataRequestFollower.get(datarequest_id=datarequest_id)])
-    users.update([comment['user_id'] for comment in list_datarequest_comments(new_context, {'datarequest_id': datarequest_id})])
+    users.update(
+        [comment["user_id"] for comment in list_datarequest_comments(new_context, {"datarequest_id": datarequest_id})]
+    )
 
-    if datarequest_dict['organization']:
-        users.update([user['id'] for user in datarequest_dict['organization']['users']])
+    if datarequest_dict["organization"]:
+        users.update([user["id"] for user in datarequest_dict["organization"]["users"]])
 
     # Notifications are not sent to the user that performs the action
-    users.discard(context['auth_user_obj'].id)
+    users.discard(context["auth_user_obj"].id)
 
     return users
 
@@ -146,14 +147,14 @@ def _send_mail(user_ids, action_type, datarequest):
         try:
             user_data = model.User.get(user_id)
             extra_vars = {
-                'datarequest': datarequest,
-                'user': user_data,
-                'site_title': config.get('ckan.site_title'),
-                'site_url': config.get('ckan.site_url')
+                "datarequest": datarequest,
+                "user": user_data,
+                "site_title": config.get("ckan.site_title"),
+                "site_url": config.get("ckan.site_url"),
             }
 
-            subject = base.render_jinja2('emails/subjects/{0}.txt'.format(action_type), extra_vars)
-            body = base.render_jinja2('emails/bodies/{0}.txt'.format(action_type), extra_vars)
+            subject = base.render_jinja2("emails/subjects/{0}.txt".format(action_type), extra_vars)
+            body = base.render_jinja2("emails/bodies/{0}.txt".format(action_type), extra_vars)
 
             mailer.mail_user(user_data, subject, body)
 
@@ -162,7 +163,7 @@ def _send_mail(user_ids, action_type, datarequest):
 
 
 def create_datarequest(context, data_dict):
-    '''
+    """
     Action to create a new data request. The function checks the access rights
     of the user before creating the data request. If the user is not allowed
     a NotAuthorized exception will be risen.
@@ -185,10 +186,10 @@ def create_datarequest(context, data_dict):
         organization_id, open_time, accepted_dataset, close_time, closed,
         followers)
     :rtype: dict
-    '''
+    """
 
-    model = context['model']
-    session = context['session']
+    model = context["model"]
+    session = context["session"]
 
     # Init the data base
     db.init_db(model)
@@ -202,7 +203,7 @@ def create_datarequest(context, data_dict):
     # Store the data
     data_req = db.DataRequest()
     _undictize_datarequest_basic(data_req, data_dict)
-    data_req.user_id = context['auth_user_obj'].id
+    data_req.user_id = context["auth_user_obj"].id
     data_req.open_time = datetime.datetime.utcnow()
 
     session.add(data_req)
@@ -210,16 +211,16 @@ def create_datarequest(context, data_dict):
 
     datarequest_dict = _dictize_datarequest(data_req)
 
-    if datarequest_dict['organization']:
-        users = set([user['id'] for user in datarequest_dict['organization']['users']])
-        users.discard(context['auth_user_obj'].id)
-        _send_mail(users, 'new_datarequest', datarequest_dict)
+    if datarequest_dict["organization"]:
+        users = set([user["id"] for user in datarequest_dict["organization"]["users"]])
+        users.discard(context["auth_user_obj"].id)
+        _send_mail(users, "new_datarequest", datarequest_dict)
 
     return datarequest_dict
 
 
 def show_datarequest(context, data_dict):
-    '''
+    """
     Action to retrieve the information of a data request. The only required
     parameter is the id of the data request. A NotFound exception will be
     risen if the given id is not found.
@@ -234,13 +235,13 @@ def show_datarequest(context, data_dict):
         organization_id, open_time, accepted_dataset, close_time, closed,
         followers)
     :rtype: dict
-    '''
+    """
 
-    model = context['model']
-    datarequest_id = data_dict.get('id', '')
+    model = context["model"]
+    datarequest_id = data_dict.get("id", "")
 
     if not datarequest_id:
-        raise tk.ValidationError(tk._('Data Request ID has not been included'))
+        raise tk.ValidationError(tk._("Data Request ID has not been included"))
 
     # Init the data base
     db.init_db(model)
@@ -251,7 +252,7 @@ def show_datarequest(context, data_dict):
     # Get the data request
     result = db.DataRequest.get(id=datarequest_id)
     if not result:
-        raise tk.ObjectNotFound(tk._('Data Request %s not found in the data base') % datarequest_id)
+        raise tk.ObjectNotFound(tk._("Data Request %s not found in the data base") % datarequest_id)
 
     data_req = result[0]
     data_dict = _dictize_datarequest(data_req)
@@ -260,7 +261,7 @@ def show_datarequest(context, data_dict):
 
 
 def update_datarequest(context, data_dict):
-    '''
+    """
     Action to update a data request. The function checks the access rights of
     the user before updating the data request. If the user is not allowed
     a NotAuthorized exception will be risen.
@@ -286,14 +287,14 @@ def update_datarequest(context, data_dict):
         organization_id, open_time, accepted_dataset, close_time, closed,
         followers)
     :rtype: dict
-    '''
+    """
 
-    model = context['model']
-    session = context['session']
-    datarequest_id = data_dict.get('id', '')
+    model = context["model"]
+    session = context["session"]
+    datarequest_id = data_dict.get("id", "")
 
     if not datarequest_id:
-        raise tk.ValidationError(tk._('Data Request ID has not been included'))
+        raise tk.ValidationError(tk._("Data Request ID has not been included"))
 
     # Init the data base
     db.init_db(model)
@@ -304,12 +305,12 @@ def update_datarequest(context, data_dict):
     # Get the initial data
     result = db.DataRequest.get(id=datarequest_id)
     if not result:
-        raise tk.ObjectNotFound(tk._('Data Request %s not found in the data base') % datarequest_id)
+        raise tk.ObjectNotFound(tk._("Data Request %s not found in the data base") % datarequest_id)
 
     data_req = result[0]
 
     # Avoid the validator to return an error when the user does not change the title
-    context['avoid_existing_title_check'] = data_req.title == data_dict['title']
+    context["avoid_existing_title_check"] = data_req.title == data_dict["title"]
 
     # Validate data
     validator.validate_datarequest(context, data_dict)
@@ -324,7 +325,7 @@ def update_datarequest(context, data_dict):
 
 
 def list_datarequests(context, data_dict):
-    '''
+    """
     Returns a list with the existing data requests. Rights access will be
     checked before returning the results. If the user is not allowed, a
     NotAuthorized exception will be risen.
@@ -363,11 +364,11 @@ def list_datarequests(context, data_dict):
         facets (a list of the facets that can be used) and count (the total
         number of existing data requests)
     :rtype: dict
-    '''
+    """
 
-    model = context['model']
-    organization_show = tk.get_action('organization_show')
-    user_show = tk.get_action('user_show')
+    model = context["model"]
+    organization_show = tk.get_action("organization_show")
+    user_show = tk.get_action("user_show")
 
     # Init the data base
     db.init_db(model)
@@ -376,45 +377,45 @@ def list_datarequests(context, data_dict):
     tk.check_access(constants.LIST_DATAREQUESTS, context, data_dict)
 
     # Get the organization
-    organization_id = data_dict.get('organization_id', None)
+    organization_id = data_dict.get("organization_id", None)
     if organization_id:
         # Get organization ID (organization name is received sometimes)
-        organization_id = organization_show({'ignore_auth': True}, {'id': organization_id}).get('id')
+        organization_id = organization_show({"ignore_auth": True}, {"id": organization_id}).get("id")
 
-    user_id = data_dict.get('user_id', None)
+    user_id = data_dict.get("user_id", None)
     if user_id:
         # Get user ID (user name is received sometimes)
-        user_id = user_show({'ignore_auth': True}, {'id': user_id}).get('id')
+        user_id = user_show({"ignore_auth": True}, {"id": user_id}).get("id")
 
     # Filter by state
-    closed = data_dict.get('closed', None)
+    closed = data_dict.get("closed", None)
 
     # Free text filter
-    q = data_dict.get('q', None)
+    q = data_dict.get("q", None)
 
     # Sort. By default, data requests are returned in the order they are created
     # This is something new in version 0.3.0. In previous versions, requests were
     # returned in inverse order
     desc = False
-    if data_dict.get('sort', None) == 'desc':
+    if data_dict.get("sort", None) == "desc":
         desc = True
 
     # Call the function
-    db_datarequests = db.DataRequest.get_ordered_by_date(organization_id=organization_id,
-                                                         user_id=user_id, closed=closed,
-                                                         q=q, desc=desc)
+    db_datarequests = db.DataRequest.get_ordered_by_date(
+        organization_id=organization_id, user_id=user_id, closed=closed, q=q, desc=desc
+    )
 
     # Dictize the results
     datarequests = []
-    offset = data_dict.get('offset', 0)
-    limit = data_dict.get('limit', constants.DATAREQUESTS_PER_PAGE)
-    for data_req in db_datarequests[offset:offset + limit]:
+    offset = data_dict.get("offset", 0)
+    limit = data_dict.get("limit", constants.DATAREQUESTS_PER_PAGE)
+    for data_req in db_datarequests[offset : offset + limit]:
         datarequests.append(_dictize_datarequest(data_req))
 
     # Facets
     no_processed_organization_facet = {}
-    CLOSED = 'Closed'
-    OPEN = 'Open'
+    CLOSED = "Closed"
+    OPEN = "Open"
     no_processed_state_facet = {CLOSED: 0, OPEN: 0}
     for data_req in db_datarequests:
         if data_req.organization_id:
@@ -430,42 +431,38 @@ def list_datarequests(context, data_dict):
     organization_facet = []
     for organization_id in no_processed_organization_facet:
         try:
-            organization = organization_show({'ignore_auth': True}, {'id': organization_id})
-            organization_facet.append({
-                'name': organization.get('name'),
-                'display_name': organization.get('display_name'),
-                'count': no_processed_organization_facet[organization_id]
-            })
+            organization = organization_show({"ignore_auth": True}, {"id": organization_id})
+            organization_facet.append(
+                {
+                    "name": organization.get("name"),
+                    "display_name": organization.get("display_name"),
+                    "count": no_processed_organization_facet[organization_id],
+                }
+            )
         except:
             pass
 
     state_facet = []
     for state in no_processed_state_facet:
         if no_processed_state_facet[state]:
-            state_facet.append({
-                'name': state.lower(),
-                'display_name': tk._(state),
-                'count': no_processed_state_facet[state]
-            })
+            state_facet.append(
+                {"name": state.lower(), "display_name": tk._(state), "count": no_processed_state_facet[state]}
+            )
 
-    result = {
-        'count': len(db_datarequests),
-        'facets': {},
-        'result': datarequests
-    }
+    result = {"count": len(db_datarequests), "facets": {}, "result": datarequests}
 
     # Facets can only be included if they contain something
     if organization_facet:
-        result['facets']['organization'] = {'items': organization_facet}
+        result["facets"]["organization"] = {"items": organization_facet}
 
     if state_facet:
-        result['facets']['state'] = {'items': state_facet}
+        result["facets"]["state"] = {"items": state_facet}
 
     return result
 
 
 def delete_datarequest(context, data_dict):
-    '''
+    """
     Action to delete a new data request. The function checks the access rights
     of the user before deleting the data request. If the user is not allowed
     a NotAuthorized exception will be risen.
@@ -477,15 +474,15 @@ def delete_datarequest(context, data_dict):
         organization_id, open_time, accepted_dataset, close_time, closed,
         followers)
     :rtype: dict
-    '''
+    """
 
-    model = context['model']
-    session = context['session']
-    datarequest_id = data_dict.get('id', '')
+    model = context["model"]
+    session = context["session"]
+    datarequest_id = data_dict.get("id", "")
 
     # Check id
     if not datarequest_id:
-        raise tk.ValidationError(tk._('Data Request ID has not been included'))
+        raise tk.ValidationError(tk._("Data Request ID has not been included"))
 
     # Init the data base
     db.init_db(model)
@@ -496,7 +493,7 @@ def delete_datarequest(context, data_dict):
     # Get the data request
     result = db.DataRequest.get(id=datarequest_id)
     if not result:
-        raise tk.ObjectNotFound(tk._('Data Request %s not found in the data base') % datarequest_id)
+        raise tk.ObjectNotFound(tk._("Data Request %s not found in the data base") % datarequest_id)
 
     data_req = result[0]
     session.delete(data_req)
@@ -506,7 +503,7 @@ def delete_datarequest(context, data_dict):
 
 
 def close_datarequest(context, data_dict):
-    '''
+    """
     Action to close a data request. Access rights will be checked before
     closing the data request. If the user is not allowed, a NotAuthorized
     exception will be risen.
@@ -523,15 +520,15 @@ def close_datarequest(context, data_dict):
         followers)
     :rtype: dict
 
-    '''
+    """
 
-    model = context['model']
-    session = context['session']
-    datarequest_id = data_dict.get('id', '')
+    model = context["model"]
+    session = context["session"]
+    datarequest_id = data_dict.get("id", "")
 
     # Check id
     if not datarequest_id:
-        raise tk.ValidationError(tk._('Data Request ID has not been included'))
+        raise tk.ValidationError(tk._("Data Request ID has not been included"))
 
     # Init the data base
     db.init_db(model)
@@ -542,7 +539,7 @@ def close_datarequest(context, data_dict):
     # Get the data request
     result = db.DataRequest.get(id=datarequest_id)
     if not result:
-        raise tk.ObjectNotFound(tk._('Data Request %s not found in the data base') % datarequest_id)
+        raise tk.ObjectNotFound(tk._("Data Request %s not found in the data base") % datarequest_id)
 
     # Validate data
     validator.validate_datarequest_closing(context, data_dict)
@@ -551,10 +548,10 @@ def close_datarequest(context, data_dict):
 
     # Was the data request previously closed?
     if data_req.closed:
-        raise tk.ValidationError([tk._('This Data Request is already closed')])
+        raise tk.ValidationError([tk._("This Data Request is already closed")])
 
     data_req.closed = True
-    data_req.accepted_dataset_id = data_dict.get('accepted_dataset_id', None)
+    data_req.accepted_dataset_id = data_dict.get("accepted_dataset_id", None)
     data_req.close_time = datetime.datetime.utcnow()
 
     session.add(data_req)
@@ -564,13 +561,13 @@ def close_datarequest(context, data_dict):
 
     # Mailing
     users = _get_datarequest_involved_users(context, datarequest_dict)
-    _send_mail(users, 'close_datarequest', datarequest_dict)
+    _send_mail(users, "close_datarequest", datarequest_dict)
 
     return datarequest_dict
 
 
 def comment_datarequest(context, data_dict):
-    '''
+    """
     Action to create a comment in a data request. Access rights will be checked
     before creating the comment and a NotAuthorized exception will be risen if
     the user is not allowed to create the comment
@@ -585,15 +582,15 @@ def comment_datarequest(context, data_dict):
        time and comment)
     :rtype: dict
 
-    '''
+    """
 
-    model = context['model']
-    session = context['session']
-    datarequest_id = data_dict.get('datarequest_id', '')
+    model = context["model"]
+    session = context["session"]
+    datarequest_id = data_dict.get("datarequest_id", "")
 
     # Check id
     if not datarequest_id:
-        raise tk.ValidationError([tk._('Data Request ID has not been included')])
+        raise tk.ValidationError([tk._("Data Request ID has not been included")])
 
     # Init the data base
     db.init_db(model)
@@ -607,7 +604,7 @@ def comment_datarequest(context, data_dict):
     # Store the data
     comment = db.Comment()
     _undictize_comment_basic(comment, data_dict)
-    comment.user_id = context['auth_user_obj'].id
+    comment.user_id = context["auth_user_obj"].id
     comment.time = datetime.datetime.utcnow()
 
     session.add(comment)
@@ -615,13 +612,13 @@ def comment_datarequest(context, data_dict):
 
     # Mailing
     users = _get_datarequest_involved_users(context, datarequest_dict)
-    _send_mail(users, 'new_comment', datarequest_dict)
+    _send_mail(users, "new_comment", datarequest_dict)
 
     return _dictize_comment(comment)
 
 
 def show_datarequest_comment(context, data_dict):
-    '''
+    """
     Action to retrieve a comment. Access rights will be checked before getting
     the comment and a NotAuthorized exception will be risen if the user is not
     allowed to get the comment
@@ -632,14 +629,14 @@ def show_datarequest_comment(context, data_dict):
     :returns: A dict with the following fields: id, user_id, datarequest_id,
         time and comment
     :rtype: dict
-    '''
+    """
 
-    model = context['model']
-    comment_id = data_dict.get('id', '')
+    model = context["model"]
+    comment_id = data_dict.get("id", "")
 
     # Check id
     if not comment_id:
-        raise tk.ValidationError([tk._('Comment ID has not been included')])
+        raise tk.ValidationError([tk._("Comment ID has not been included")])
 
     # Init the data base
     db.init_db(model)
@@ -650,13 +647,13 @@ def show_datarequest_comment(context, data_dict):
     # Get comments
     result = db.Comment.get(id=comment_id)
     if not result:
-        raise tk.ObjectNotFound(tk._('Comment %s not found in the data base') % comment_id)
+        raise tk.ObjectNotFound(tk._("Comment %s not found in the data base") % comment_id)
 
     return _dictize_comment(result[0])
 
 
 def list_datarequest_comments(context, data_dict):
-    '''
+    """
     Action to retrieve all the comments of a data request. Access rights will
     be checked before getting the comments and a NotAuthorized exception will
     be risen if the user is not allowed to read the comments
@@ -678,14 +675,14 @@ def list_datarequest_comments(context, data_dict):
         a dict with the following fields: id, user_id, datarequest_id, time and
         comment
     :rtype: list
-    '''
+    """
 
-    model = context['model']
-    datarequest_id = data_dict.get('datarequest_id', '')
+    model = context["model"]
+    datarequest_id = data_dict.get("datarequest_id", "")
 
     # Check id
     if not datarequest_id:
-        raise tk.ValidationError(tk._('Data Request ID has not been included'))
+        raise tk.ValidationError(tk._("Data Request ID has not been included"))
 
     # Init the data base
     db.init_db(model)
@@ -694,7 +691,7 @@ def list_datarequest_comments(context, data_dict):
     # This is something new in version 0.3.0. In previous versions, comments
     # were returned in inverse order
     desc = False
-    if data_dict.get('sort', None) == 'desc':
+    if data_dict.get("sort", None) == "desc":
         desc = True
 
     # Check access
@@ -711,7 +708,7 @@ def list_datarequest_comments(context, data_dict):
 
 
 def update_datarequest_comment(context, data_dict):
-    '''
+    """
     Action to update a comment of a data request. Access rights will be checked
     before updating the comment and a NotAuthorized exception will be risen if
     the user is not allowed to update the comment
@@ -725,14 +722,14 @@ def update_datarequest_comment(context, data_dict):
     :returns: A dict with the data request comment (id, user_id, datarequest_id,
         time and comment)
     :rtype: dict
-    '''
+    """
 
-    model = context['model']
-    session = context['session']
-    comment_id = data_dict.get('id', '')
+    model = context["model"]
+    session = context["session"]
+    comment_id = data_dict.get("id", "")
 
     if not comment_id:
-        raise tk.ValidationError([tk._('Comment ID has not been included')])
+        raise tk.ValidationError([tk._("Comment ID has not been included")])
 
     # Init the data base
     db.init_db(model)
@@ -743,7 +740,7 @@ def update_datarequest_comment(context, data_dict):
     # Get the data request
     result = db.Comment.get(id=comment_id)
     if not result:
-        raise tk.ObjectNotFound(tk._('Comment %s not found in the data base') % comment_id)
+        raise tk.ObjectNotFound(tk._("Comment %s not found in the data base") % comment_id)
 
     comment = result[0]
 
@@ -760,7 +757,7 @@ def update_datarequest_comment(context, data_dict):
 
 
 def delete_datarequest_comment(context, data_dict):
-    '''
+    """
     Action to delete a comment of a data request. Access rights will be checked
     before deleting the comment and a NotAuthorized exception will be risen if
     the user is not allowed to delete the comment
@@ -771,14 +768,14 @@ def delete_datarequest_comment(context, data_dict):
     :returns: A dict with the data request comment (id, user_id, datarequest_id,
         time and comment)
     :rtype: dict
-    '''
+    """
 
-    model = context['model']
-    session = context['session']
-    comment_id = data_dict.get('id', '')
+    model = context["model"]
+    session = context["session"]
+    comment_id = data_dict.get("id", "")
 
     if not comment_id:
-        raise tk.ValidationError([tk._('Comment ID has not been included')])
+        raise tk.ValidationError([tk._("Comment ID has not been included")])
 
     # Init the data base
     db.init_db(model)
@@ -789,7 +786,7 @@ def delete_datarequest_comment(context, data_dict):
     # Get the comment
     result = db.Comment.get(id=comment_id)
     if not result:
-        raise tk.ObjectNotFound(tk._('Comment %s not found in the data base') % comment_id)
+        raise tk.ObjectNotFound(tk._("Comment %s not found in the data base") % comment_id)
 
     comment = result[0]
 
@@ -798,8 +795,9 @@ def delete_datarequest_comment(context, data_dict):
 
     return _dictize_comment(comment)
 
+
 def follow_datarequest(context, data_dict):
-    '''
+    """
     Action to follow a data request. Access rights will be cheked before
     following a datarequest and a NotAuthorized exception will be risen if the
     user is not allowed to follow the given datarequest. ValidationError will
@@ -812,14 +810,14 @@ def follow_datarequest(context, data_dict):
 
     :returns: True
     :rtype: bool
-    '''
+    """
 
-    model = context['model']
-    session = context['session']
-    datarequest_id = data_dict.get('id', '')
+    model = context["model"]
+    session = context["session"]
+    datarequest_id = data_dict.get("id", "")
 
     if not datarequest_id:
-        raise tk.ValidationError([tk._('Data Request ID has not been included')])
+        raise tk.ValidationError([tk._("Data Request ID has not been included")])
 
     # Init the data base
     db.init_db(model)
@@ -830,13 +828,13 @@ def follow_datarequest(context, data_dict):
     # Get the data request
     result = db.DataRequest.get(id=datarequest_id)
     if not result:
-        raise tk.ObjectNotFound(tk._('Data Request %s not found in the data base') % datarequest_id)
+        raise tk.ObjectNotFound(tk._("Data Request %s not found in the data base") % datarequest_id)
 
     # Is already following?
-    user_id = context['auth_user_obj'].id
+    user_id = context["auth_user_obj"].id
     result = db.DataRequestFollower.get(datarequest_id=datarequest_id, user_id=user_id)
     if result:
-        raise tk.ValidationError([tk._('The user is already following the given Data Request')])
+        raise tk.ValidationError([tk._("The user is already following the given Data Request")])
 
     # Store the data
     follower = db.DataRequestFollower()
@@ -849,8 +847,9 @@ def follow_datarequest(context, data_dict):
 
     return True
 
+
 def unfollow_datarequest(context, data_dict):
-    '''
+    """
     Action to unfollow a data request. Access rights will be cheked before
     unfollowing a datarequest and a NotAuthorized exception will be risen if
     the user is not allowed to unfollow the given datarequest. ValidationError
@@ -863,14 +862,14 @@ def unfollow_datarequest(context, data_dict):
 
     :returns: True
     :rtype: bool
-    '''
+    """
 
-    model = context['model']
-    session = context['session']
-    datarequest_id = data_dict.get('id', '')
+    model = context["model"]
+    session = context["session"]
+    datarequest_id = data_dict.get("id", "")
 
     if not datarequest_id:
-        raise tk.ValidationError([tk._('Data Request ID has not been included')])
+        raise tk.ValidationError([tk._("Data Request ID has not been included")])
 
     # Init the data base
     db.init_db(model)
@@ -879,10 +878,10 @@ def unfollow_datarequest(context, data_dict):
     tk.check_access(constants.UNFOLLOW_DATAREQUEST, context, data_dict)
 
     # Is already following?
-    user_id = context['auth_user_obj'].id
+    user_id = context["auth_user_obj"].id
     result = db.DataRequestFollower.get(datarequest_id=datarequest_id, user_id=user_id)
     if not result:
-        raise tk.ObjectNotFound([tk._('The user is not following the given Data Request')])
+        raise tk.ObjectNotFound([tk._("The user is not following the given Data Request")])
 
     follower = result[0]
 

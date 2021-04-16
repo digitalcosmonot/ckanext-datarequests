@@ -29,8 +29,9 @@ def get_comments_number(datarequest_id):
 
 
 def get_comments_badge(datarequest_id):
-    return tk.render_snippet('datarequests/snippets/badge.html',
-                             {'comments_count': get_comments_number(datarequest_id)})
+    return tk.render_snippet(
+        "datarequests/snippets/badge.html", {"comments_count": get_comments_number(datarequest_id)}
+    )
 
 
 def get_open_datarequests_number():
@@ -46,9 +47,8 @@ def is_following_datarequest(datarequest_id):
 
 
 def get_open_datarequests_badge(show_badge):
-    '''The snippet is only returned when show_badge == True'''
+    """The snippet is only returned when show_badge == True"""
     if show_badge:
-        return tk.render_snippet('datarequests/snippets/badge.html',
-                                 {'comments_count': get_open_datarequests_number()})
+        return tk.render_snippet("datarequests/snippets/badge.html", {"comments_count": get_open_datarequests_number()})
     else:
-        return ''
+        return ""

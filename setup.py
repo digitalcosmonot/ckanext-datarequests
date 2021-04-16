@@ -22,50 +22,46 @@ import sys
 
 from setuptools import find_packages, setup
 
-version = '1.1.0'
+version = "1.1.0"
 
 setup(
-    name='ckanext-datarequests',
+    name="ckanext-datarequests",
     version=version,
     description="CKAN Extension - Data Requests",
-    long_description='''
+    long_description="""
     CKAN extension that allows users to ask for datasets that are not already published in the CKAN instance. 
     In this way we can set up a Data Market, not only with data supplies but also with data demands.
-    ''',
-    classifiers=[], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
-    keywords='',
-    author='CoNWeT Lab.',
-    author_email='amagan@conwet.com',
-    url='https://conwet.fi.upm.es',
-    download_url='https://github.com/conwetlab/ckanext-datarequests/tarball/v' + version,
-    license='GNU Affero General Public License',
-    packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
-    namespace_packages=['ckanext', 'ckanext.datarequests'],
+    """,
+    classifiers=[],  # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
+    keywords="",
+    author="CoNWeT Lab.",
+    author_email="amagan@conwet.com",
+    url="https://conwet.fi.upm.es",
+    download_url="https://github.com/conwetlab/ckanext-datarequests/tarball/v" + version,
+    license="GNU Affero General Public License",
+    packages=find_packages(exclude=["ez_setup", "examples", "tests"]),
+    namespace_packages=["ckanext", "ckanext.datarequests"],
     include_package_data=True,
     zip_safe=False,
-    setup_requires=['nose>=1.3.0'],
+    setup_requires=["nose>=1.3.0"],
     install_requires=[
         # -*- Extra requirements: -*-
     ],
-    tests_require=[
-        'nose_parameterized==0.3.3',
-        'selenium==2.53',
-        'coveralls==1.1'
-    ],
-    test_suite='nosetests',
-    entry_points='''
+    tests_require=["nose_parameterized==0.3.3", "selenium==2.53", "coveralls==1.1"],
+    test_suite="nosetests",
+    entry_points="""
 
         [ckan.plugins]
         datarequests=ckanext.datarequests.plugin:DataRequestsPlugin
 
         [babel.extractors]
         ckan = ckan.lib.extract:extract_ckan
-    ''',
+    """,
     message_extractors={
-        'ckanext': [
-            ('**.py', 'python', None),
-            ('**.js', 'javascript', None),
-            ('**/templates/**.html', 'ckan', None),
+        "ckanext": [
+            ("**.py", "python", None),
+            ("**.js", "javascript", None),
+            ("**/templates/**.html", "ckan", None),
         ],
-    }
+    },
 )

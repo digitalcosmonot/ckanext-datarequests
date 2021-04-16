@@ -25,18 +25,17 @@ import ckanext.datarequests.helpers as helpers
 
 
 class HelpersTest(unittest.TestCase):
-
     def setUp(self):
-        self.tk_patch = patch('ckanext.datarequests.helpers.tk')
+        self.tk_patch = patch("ckanext.datarequests.helpers.tk")
         self.tk_patch.start()
 
-        self.model_patch = patch('ckanext.datarequests.helpers.model')
+        self.model_patch = patch("ckanext.datarequests.helpers.model")
         self.model_patch.start()
 
-        self.db_patch = patch('ckanext.datarequests.helpers.db')
+        self.db_patch = patch("ckanext.datarequests.helpers.db")
         self.db_patch.start()
 
-        self.c_patch = patch('ckanext.datarequests.helpers.c')
+        self.c_patch = patch("ckanext.datarequests.helpers.c")
         self.c = self.c_patch.start()
 
     def tearDown(self):
@@ -51,7 +50,7 @@ class HelpersTest(unittest.TestCase):
         helpers.db.Comment.get_comment_datarequests_number.return_value = n_comments
 
         # Call the function
-        datarequest_id = 'example_uuidv4'
+        datarequest_id = "example_uuidv4"
         result = helpers.get_comments_number(datarequest_id)
 
         # Assertions
@@ -65,15 +64,16 @@ class HelpersTest(unittest.TestCase):
         helpers.db.Comment.get_comment_datarequests_number.return_value = n_comments
 
         # Call the function
-        datarequest_id = 'example_uuidv4'
+        datarequest_id = "example_uuidv4"
         result = helpers.get_comments_badge(datarequest_id)
 
         # Assertions
         helpers.db.init_db.assert_called_once_with(helpers.model)
         helpers.db.Comment.get_comment_datarequests_number.assert_called_once_with(datarequest_id=datarequest_id)
         self.assertEquals(result, helpers.tk.render_snippet.return_value)
-        helpers.tk.render_snippet.assert_called_once_with('datarequests/snippets/badge.html',
-                                                          {'comments_count': n_comments})
+        helpers.tk.render_snippet.assert_called_once_with(
+            "datarequests/snippets/badge.html", {"comments_count": n_comments}
+        )
 
     def test_get_open_datarequests_number(self):
         # Mocking
@@ -100,25 +100,30 @@ class HelpersTest(unittest.TestCase):
         helpers.db.init_db.assert_called_once_with(helpers.model)
         helpers.db.DataRequest.get_open_datarequests_number.assert_called_once_with()
         self.assertEquals(result, helpers.tk.render_snippet.return_value)
-        helpers.tk.render_snippet.assert_called_once_with('datarequests/snippets/badge.html',
-                                                          {'comments_count': n_datarequests})
+        helpers.tk.render_snippet.assert_called_once_with(
+            "datarequests/snippets/badge.html", {"comments_count": n_datarequests}
+        )
 
     def test_get_open_datarequests_badge_false(self):
-        self.assertEquals(helpers.get_open_datarequests_badge(False), '')
+        self.assertEquals(helpers.get_open_datarequests_badge(False), "")
 
     def test_is_following_datarequest_true(self):
         follower = MagicMock()
-        datarequest_id = 'example_id'
+        datarequest_id = "example_id"
         helpers.db.DataRequestFollower.get.return_value = [follower]
 
         self.assertTrue(helpers.is_following_datarequest(datarequest_id))
 
-        helpers.db.DataRequestFollower.get.assert_called_once_with(datarequest_id=datarequest_id, user_id=self.c.userobj.id)
+        helpers.db.DataRequestFollower.get.assert_called_once_with(
+            datarequest_id=datarequest_id, user_id=self.c.userobj.id
+        )
 
     def test_is_following_datarequest_false(self):
-        datarequest_id = 'example_id'
+        datarequest_id = "example_id"
         helpers.db.DataRequestFollower.get.return_value = []
 
         self.assertFalse(helpers.is_following_datarequest(datarequest_id))
 
-        helpers.db.DataRequestFollower.get.assert_called_once_with(datarequest_id=datarequest_id, user_id=self.c.userobj.id)
+        helpers.db.DataRequestFollower.get.assert_called_once_with(
+            datarequest_id=datarequest_id, user_id=self.c.userobj.id
+        )

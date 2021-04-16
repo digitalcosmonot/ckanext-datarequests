@@ -21,21 +21,21 @@ from . import constants
 
 
 def create_datarequest(context, data_dict):
-    return {'success': True}
+    return {"success": True}
 
 
 @tk.auth_allow_anonymous_access
 def show_datarequest(context, data_dict):
-    return {'success': True}
+    return {"success": True}
 
 
 def auth_if_creator(context, data_dict, show_function):
     # Sometimes data_dict only contains the 'id'
-    if 'user_id' not in data_dict:
+    if "user_id" not in data_dict:
         function = tk.get_action(show_function)
-        data_dict = function({'ignore_auth': True}, {'id': data_dict.get('id')})
+        data_dict = function({"ignore_auth": True}, {"id": data_dict.get("id")})
 
-    return {'success': data_dict['user_id'] == context.get('auth_user_obj').id}
+    return {"success": data_dict["user_id"] == context.get("auth_user_obj").id}
 
 
 def update_datarequest(context, data_dict):
@@ -44,7 +44,7 @@ def update_datarequest(context, data_dict):
 
 @tk.auth_allow_anonymous_access
 def list_datarequests(context, data_dict):
-    return {'success': True}
+    return {"success": True}
 
 
 def delete_datarequest(context, data_dict):
@@ -56,18 +56,18 @@ def close_datarequest(context, data_dict):
 
 
 def comment_datarequest(context, data_dict):
-    return {'success': True}
+    return {"success": True}
 
 
 @tk.auth_allow_anonymous_access
 def list_datarequest_comments(context, data_dict):
-    new_data_dict = {'id': data_dict['datarequest_id']}
+    new_data_dict = {"id": data_dict["datarequest_id"]}
     return show_datarequest(context, new_data_dict)
 
 
 @tk.auth_allow_anonymous_access
 def show_datarequest_comment(context, data_dict):
-    return {'success': True}
+    return {"success": True}
 
 
 def update_datarequest_comment(context, data_dict):
@@ -79,8 +79,8 @@ def delete_datarequest_comment(context, data_dict):
 
 
 def follow_datarequest(context, data_dict):
-    return {'success': True}
+    return {"success": True}
 
 
 def unfollow_datarequest(context, data_dict):
-    return {'success': True}
+    return {"success": True}
