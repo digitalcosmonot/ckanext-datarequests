@@ -133,7 +133,7 @@ class DataRequestsPlugin(p.SingletonPlugin):
         tk.add_public_directory(config, "public")
 
         # Register this plugin's fanstatic directory with CKAN.
-        tk.add_resource("fanstatic", "datarequest")
+        tk.add_resource("assets", "datarequests")
 
     def get_blueprint(self):
         """
