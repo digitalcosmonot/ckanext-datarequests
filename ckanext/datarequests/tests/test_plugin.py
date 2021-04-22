@@ -277,14 +277,14 @@ class DataRequestPluginTest(unittest.TestCase):
         mapa.connect.assert_any_call(
             "datarequests_index",
             f"/{dr_basic_path}",
-            controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+            controller="datarequests",
             action="index",
             conditions=dict(method=["GET"]),
         )
 
         mapa.connect.assert_any_call(
             f"/{dr_basic_path}/new",
-            controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+            controller="datarequests",
             action="new",
             conditions=dict(method=["GET", "POST"]),
         )
@@ -292,7 +292,7 @@ class DataRequestPluginTest(unittest.TestCase):
         mapa.connect.assert_any_call(
             "show_datarequest",
             f"/{dr_basic_path}/{{id}}",
-            controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+            controller="datarequests",
             action="show",
             conditions=dict(method=["GET"]),
             ckan_icon=mock_icon,
@@ -300,21 +300,21 @@ class DataRequestPluginTest(unittest.TestCase):
 
         mapa.connect.assert_any_call(
             f"/{dr_basic_path}/edit/{{id}}",
-            controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+            controller="datarequests",
             action="update",
             conditions=dict(method=["GET", "POST"]),
         )
 
         mapa.connect.assert_any_call(
             f"/{dr_basic_path}/delete/{{id}}",
-            controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+            controller="datarequests",
             action="delete",
             conditions=dict(method=["POST"]),
         )
 
         mapa.connect.assert_any_call(
             f"/{dr_basic_path}/close/{{id}}",
-            controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+            controller="datarequests",
             action="close",
             conditions=dict(method=["GET", "POST"]),
         )
@@ -322,7 +322,7 @@ class DataRequestPluginTest(unittest.TestCase):
         mapa.connect.assert_any_call(
             "organization_datarequests",
             f"/organization/{dr_basic_path}/{{id}}",
-            controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+            controller="datarequests",
             action="organization_datarequests",
             conditions=dict(method=["GET"]),
             ckan_icon=mock_icon,
@@ -331,7 +331,7 @@ class DataRequestPluginTest(unittest.TestCase):
         mapa.connect.assert_any_call(
             "user_datarequests",
             f"/user/{dr_basic_path}/{{id}}",
-            controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+            controller="datarequests",
             action="user_datarequests",
             conditions=dict(method=["GET"]),
             ckan_icon=mock_icon,
@@ -340,7 +340,7 @@ class DataRequestPluginTest(unittest.TestCase):
         mapa.connect.assert_any_call(
             "user_datarequests",
             f"/user/{dr_basic_path}/{{id}}",
-            controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+            controller="datarequests",
             action="user_datarequests",
             conditions=dict(method=["GET"]),
             ckan_icon=mock_icon,
@@ -348,14 +348,14 @@ class DataRequestPluginTest(unittest.TestCase):
 
         mapa.connect(
             f"/{dr_basic_path}/follow/{{id}}",
-            controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+            controller="datarequests",
             action="follow",
             conditions=dict(method=["POST"]),
         )
 
         mapa.connect(
             f"/{dr_basic_path}/unfollow/{{id}}",
-            controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+            controller="datarequests",
             action="unfollow",
             conditions=dict(method=["POST"]),
         )
@@ -364,7 +364,7 @@ class DataRequestPluginTest(unittest.TestCase):
             mapa.connect.assert_any_call(
                 "comment_datarequest",
                 f"/{dr_basic_path}/comment/{{id}}",
-                controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+                controller="datarequests",
                 action="comment",
                 conditions=dict(method=["GET", "POST"]),
                 ckan_icon="comment",
@@ -372,7 +372,7 @@ class DataRequestPluginTest(unittest.TestCase):
 
             mapa.connect.assert_any_call(
                 f"/{dr_basic_path}/comment/{{datarequest_id}}/delete/{{comment_id}}",
-                controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+                controller="datarequests",
                 action="delete_comment",
                 conditions=dict(method=["GET", "POST"]),
             )

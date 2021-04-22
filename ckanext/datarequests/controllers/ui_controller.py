@@ -55,7 +55,7 @@ def url_with_params(url, params):
 
 def search_url(params):
     url = helpers.url_for(
-        controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+        controller="datarequests",
         action="index",
     )
     return url_with_params(url, params)
@@ -63,7 +63,7 @@ def search_url(params):
 
 def org_datarequest_url(params, id):
     url = helpers.url_for(
-        controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+        controller="datarequests",
         action="organization_datarequests",
         id=id,
     )
@@ -72,7 +72,7 @@ def org_datarequest_url(params, id):
 
 def user_datarequest_url(params, id):
     url = helpers.url_for(
-        controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+        controller="datarequests",
         action="user_datarequests",
         id=id,
     )
@@ -200,7 +200,7 @@ def _process_post(action, context):
             result = tk.get_action(action)(context, data_dict)
             tk.redirect_to(
                 helpers.url_for(
-                    controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+                    controller="datarequests",
                     action="show",
                     id=result["id"],
                 )
@@ -312,7 +312,7 @@ def delete(id):
         )
         tk.redirect_to(
             helpers.url_for(
-                controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+                controller="datarequests",
                 action="index",
             )
         )
@@ -383,7 +383,7 @@ def close(id):
             tk.get_action(constants.CLOSE_DATAREQUEST)(context, data_dict)
             tk.redirect_to(
                 helpers.url_for(
-                    controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+                    controller="datarequests",
                     action="show",
                     id=data_dict["id"],
                 )
@@ -508,7 +508,7 @@ def delete_comment(datarequest_id, comment_id):
         helpers.flash_notice(tk._("Comment has been deleted"))
         tk.redirect_to(
             helpers.url_for(
-                controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+                controller="datarequests",
                 action="comment",
                 id=datarequest_id,
             )

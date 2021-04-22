@@ -222,7 +222,7 @@ class UIControllerTest(unittest.TestCase):
                 self.assertEquals({}, controller.c.errors_summary)
                 self.assertEquals({}, controller.c.datarequest)
                 controller.helpers.url_for.assert_called_once_with(
-                    controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+                    controller="datarequests",
                     action="show",
                     id=datarequest_id,
                 )
@@ -465,7 +465,7 @@ class UIControllerTest(unittest.TestCase):
                 self.assertEquals({}, controller.c.errors_summary)
                 self.assertEquals(original_dr, controller.c.datarequest)
                 controller.helpers.url_for.assert_called_once_with(
-                    controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+                    controller="datarequests",
                     action="show",
                     id=datarequest_id,
                 )
@@ -712,18 +712,18 @@ class UIControllerTest(unittest.TestCase):
         # When URL function is called, helpers.url_for is called to get the final URL
         if func == INDEX_FUNCTION:
             controller.helpers.url_for.assert_called_once_with(
-                controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+                controller="datarequests",
                 action="index",
             )
         elif func == ORGANIZATION_DATAREQUESTS_FUNCTION:
             controller.helpers.url_for.assert_called_once_with(
-                controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+                controller="datarequests",
                 action="organization_datarequests",
                 id=organization,
             )
         elif func == USER_DATAREQUESTS_FUNCTION:
             controller.helpers.url_for.assert_called_once_with(
-                controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+                controller="datarequests",
                 action="user_datarequests",
                 id=user,
             )
@@ -794,7 +794,7 @@ class UIControllerTest(unittest.TestCase):
 
         # Redirection
         controller.helpers.url_for.assert_called_once_with(
-            controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+            controller="datarequests",
             action="index",
         )
         controller.tk.redirect_to.assert_called_once_with(
@@ -909,7 +909,7 @@ class UIControllerTest(unittest.TestCase):
 
         # Checks
         controller.helpers.url_for.assert_called_once_with(
-            controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+            controller="datarequests",
             action="show",
             id=datarequest_id,
         )
@@ -1190,7 +1190,7 @@ class UIControllerTest(unittest.TestCase):
 
         # Check redirection
         controller.helpers.url_for.assert_called_once_with(
-            controller="ckanext.datarequests.controllers.ui_controller:DataRequestsUI",
+            controller="datarequests",
             action="comment",
             id=datarequest_id,
         )

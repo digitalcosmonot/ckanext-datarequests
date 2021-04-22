@@ -1,8 +1,7 @@
 {% import 'macros/form.html' as form %}
 
 {% block scripts %}
-  {{ super() }}
-  {% asset "datarequests/edit_comment.js" %}
+  {% asset "datarequests/edit_comment_js" %}
 {% endblock scripts %}
 
 <form class="dataset-form {{ 'comment-edit-form' if comment_id else 'comment-wrapper' }} {{ 'hide' if comment_id and not (focus and errors) }} form-horizontal" id="comment-form{{ '-' + comment_id if comment_id }}" method="post" data-module="basic-form" action enctype="multipart/form-data">
