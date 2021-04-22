@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright (c) 2015 CoNWeT Lab., Universidad Politécnica de Madrid
 
 # This file is part of CKAN Data Requests Extension.
@@ -20,7 +18,9 @@
 # this is a namespace package
 try:
     import pkg_resources
+
     pkg_resources.declare_namespace(__name__)
 except ImportError:
     import pkgutil
+
     __path__ = pkgutil.extend_path(__path__, __name__)

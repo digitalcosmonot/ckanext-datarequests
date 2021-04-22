@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright (c) 2015 CoNWeT Lab., Universidad Politécnica de Madrid
 
 # This file is part of CKAN Data Requests Extension.
@@ -18,10 +16,11 @@
 # along with CKAN Data Requests Extension. If not, see <http://www.gnu.org/licenses/>.
 
 from ckan import model
-from ckan.plugins import toolkit as tk
 from ckan.common import c
+from ckan.plugins import toolkit as tk
 
 from . import db
+
 
 def get_comments_number(datarequest_id):
     # DB should be intialized
@@ -30,8 +29,10 @@ def get_comments_number(datarequest_id):
 
 
 def get_comments_badge(datarequest_id):
-    return tk.render_snippet('datarequests/snippets/badge.html',
-                             {'comments_count': get_comments_number(datarequest_id)})
+    return tk.render_snippet(
+        "datarequests/snippets/badge.html",
+        {"comments_count": get_comments_number(datarequest_id)},
+    )
 
 
 def get_open_datarequests_number():
@@ -43,13 +44,22 @@ def get_open_datarequests_number():
 def is_following_datarequest(datarequest_id):
     # DB should be intialized
     db.init_db(model)
-    return len(db.DataRequestFollower.get(datarequest_id=datarequest_id, user_id=c.userobj.id)) > 0
+    return (
+        len(
+            db.DataRequestFollower.get(
+                datarequest_id=datarequest_id, user_id=c.userobj.id
+            )
+        )
+        > 0
+    )
 
 
 def get_open_datarequests_badge(show_badge):
-    '''The snippet is only returned when show_badge == True'''
+    """The snippet is only returned when show_badge == True"""
     if show_badge:
-        return tk.render_snippet('datarequests/snippets/badge.html',
-                                 {'comments_count': get_open_datarequests_number()})
+        return tk.render_snippet(
+            "datarequests/snippets/badge.html",
+            {"comments_count": get_open_datarequests_number()},
+        )
     else:
-        return ''
+        return ""

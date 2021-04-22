@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright (c) 2015-2016 CoNWeT Lab., Universidad Politécnica de Madrid
 
 # This file is part of CKAN Data Requests Extension.
@@ -18,16 +16,17 @@
 # along with CKAN Data Requests Extension. If not, see <http://www.gnu.org/licenses/>.
 
 import unittest
-import ckanext.datarequests.db as db
 
 from mock import MagicMock
 from nose_parameterized import parameterized
 
+import ckanext.datarequests.db as db
+
 
 class DBTest(unittest.TestCase):
 
-    EXAMPLE_UUID = 'example_uuid_v4'
-    FREE_TEXT_QUERY = 'free-text'
+    EXAMPLE_UUID = "example_uuid_v4"
+    FREE_TEXT_QUERY = "free-text"
 
     def setUp(self):
         # Restart databse initial status
@@ -54,9 +53,9 @@ class DBTest(unittest.TestCase):
         db.or_ = self._or_
 
     def _test_get(self, table):
-        '''
+        """
         Aux method for Comment and Data Requests
-        '''
+        """
         db_response = [MagicMock(), MagicMock(), MagicMock()]
 
         query_result = MagicMock()
@@ -76,10 +75,7 @@ class DBTest(unittest.TestCase):
         db.init_db(model)
 
         # Call the method
-        params = {
-            'title': 'Default Title',
-            'organization_id': 'example_uuid_v4'
-        }
+        params = {"title": "Default Title", "organization_id": "example_uuid_v4"}
         result = getattr(db, table).get(**params)
 
         # Assertions
@@ -115,8 +111,8 @@ class DBTest(unittest.TestCase):
         title_column_value = MagicMock()
         description_column_value = MagicMock()
         setattr(table, time_column, time_column_value)
-        setattr(table, 'title', title_column_value)
-        setattr(table, 'description', description_column_value)
+        setattr(table, "title", title_column_value)
+        setattr(table, "description", description_column_value)
 
         # Call the method
         result = table.get_ordered_by_date(**params)
@@ -124,14 +120,14 @@ class DBTest(unittest.TestCase):
         # Calculate expected filter parameters
         expected_filter_by_params = params.copy()
 
-        if 'q' in expected_filter_by_params:
-            expected_filter_by_params.pop('q')
+        if "q" in expected_filter_by_params:
+            expected_filter_by_params.pop("q")
 
-        if 'desc' in expected_filter_by_params:
-            expected_filter_by_params.pop('desc')
+        if "desc" in expected_filter_by_params:
+            expected_filter_by_params.pop("desc")
 
-        query = '%{0}%'.format(params['q']) if 'q' in params else None
-        desc = True if 'desc' in params and params['desc'] is True else False
+        query = f'%{params["q"]}%' if "q" in params else None
+        desc = True if "desc" in params and params["desc"] is True else False
 
         # Assertions
         self.assertEquals(db_response, result)
@@ -143,8 +139,10 @@ class DBTest(unittest.TestCase):
         if query:
             title_column_value.ilike.assert_called_once_with(query)
             description_column_value.ilike.assert_called_once_with(query)
-            db.or_.assert_called_once_with(title_column_value.ilike.return_value,
-                                           description_column_value.ilike.return_value)
+            db.or_.assert_called_once_with(
+                title_column_value.ilike.return_value,
+                description_column_value.ilike.return_value,
+            )
 
             final_query.filter.assert_called_once_with(db.or_.return_value)
 
@@ -154,7 +152,9 @@ class DBTest(unittest.TestCase):
         table_comment = MagicMock()
         table_datarequest_follower = MagicMock()
 
-        db.sa.Table = MagicMock(side_effect=[table_data_request, table_comment, table_datarequest_follower])
+        db.sa.Table = MagicMock(
+            side_effect=[table_data_request, table_comment, table_datarequest_follower]
+        )
 
         # Call the function
         model = MagicMock()
@@ -164,7 +164,9 @@ class DBTest(unittest.TestCase):
         self.assertEquals(3, db.sa.Table.call_count)
         model.meta.mapper.assert_any_call(db.DataRequest, table_data_request)
         model.meta.mapper.assert_any_call(db.Comment, table_comment)
-        model.meta.mapper.assert_any_call(db.DataRequestFollower, table_datarequest_follower)
+        model.meta.mapper.assert_any_call(
+            db.DataRequestFollower, table_datarequest_follower
+        )
 
     def test_initdb_initialized(self):
         db.DataRequest = MagicMock()
@@ -180,15 +182,12 @@ class DBTest(unittest.TestCase):
         self.assertEquals(0, model.meta.mapper.call_count)
 
     def test_datarequest_get(self):
-        self._test_get('DataRequest')
+        self._test_get("DataRequest")
 
-    @parameterized.expand([
-        (None, False),
-        (1,    True)
-    ])
+    @parameterized.expand([(None, False), (1, True)])
     def test_datarequest_exist(self, first_result, expected_result):
 
-        title = 'DataRequest Title'
+        title = "DataRequest Title"
 
         # Prepare the mocks
         def _lower(text):
@@ -219,7 +218,7 @@ class DBTest(unittest.TestCase):
         db.init_db(model)
 
         # Call the method
-        db.DataRequest.title = 'TITLE'
+        db.DataRequest.title = "TITLE"
         result = db.DataRequest.datarequest_exists(title)
 
         # Assertion
@@ -231,22 +230,24 @@ class DBTest(unittest.TestCase):
         # equalization of these results must be True
         final_query.filter.assert_called_once_with(expected_result)
 
-    @parameterized.expand([
-        ({'organization_id': EXAMPLE_UUID},),
-        ({'user_id': EXAMPLE_UUID},),
-        ({'closed': True},),
-        ({'closed': False},),
-        ({'desc': True},),
-        ({'desc': False},),
-        ({'q': 'free-text'},)
-    ])
+    @parameterized.expand(
+        [
+            ({"organization_id": EXAMPLE_UUID},),
+            ({"user_id": EXAMPLE_UUID},),
+            ({"closed": True},),
+            ({"closed": False},),
+            ({"desc": True},),
+            ({"desc": False},),
+            ({"q": "free-text"},),
+        ]
+    )
     def test_datarequest_get_ordered_by_date(self, params):
-        self._test_get_ordered_by_date('DataRequest', 'open_time', params)
+        self._test_get_ordered_by_date("DataRequest", "open_time", params)
 
     def test_get_open_datarequests_number(self):
 
         n_datarequests = 7
-        count = 'example'
+        count = "example"
 
         db.func = MagicMock()
         db.func.count.return_value = count
@@ -265,7 +266,7 @@ class DBTest(unittest.TestCase):
         db.init_db(model)
 
         # Call the method
-        db.DataRequest.id = 'id'
+        db.DataRequest.id = "id"
         result = db.DataRequest.get_open_datarequests_number()
 
         # Assertions
@@ -275,20 +276,22 @@ class DBTest(unittest.TestCase):
         db.func.count.assert_called_once_with(db.DataRequest.id)
 
     def test_comment_get(self):
-        self._test_get('Comment')
+        self._test_get("Comment")
 
-    @parameterized.expand([
-        ({'datarequest_id': 'example_uuid_v4'},),
-        ({'datarequest_id': 'example_uuid_v4', 'desc': False},),
-        ({'datarequest_id': 'example_uuid_v4', 'desc': True},),
-    ])
+    @parameterized.expand(
+        [
+            ({"datarequest_id": "example_uuid_v4"},),
+            ({"datarequest_id": "example_uuid_v4", "desc": False},),
+            ({"datarequest_id": "example_uuid_v4", "desc": True},),
+        ]
+    )
     def test_comment_get_ordered_by_date(self, params):
-        self._test_get_ordered_by_date('Comment', 'time', params)
+        self._test_get_ordered_by_date("Comment", "time", params)
 
     def test_get_datarequests_comments(self):
 
         n_comments = 7
-        count = 'example'
+        count = "example"
 
         db.func = MagicMock()
         db.func.count.return_value = count
@@ -307,10 +310,8 @@ class DBTest(unittest.TestCase):
         db.init_db(model)
 
         # Call the method
-        params = {
-            'datarequest_id': 'example_uuid_v4'
-        }
-        db.Comment.id = 'id'
+        params = {"datarequest_id": "example_uuid_v4"}
+        db.Comment.id = "id"
         result = db.Comment.get_comment_datarequests_number(**params)
 
         # Assertions
@@ -320,12 +321,12 @@ class DBTest(unittest.TestCase):
         db.func.count.assert_called_once_with(db.Comment.id)
 
     def test_datarequest_follower_get(self):
-        self._test_get('DataRequestFollower')
+        self._test_get("DataRequestFollower")
 
     def test_get_datarequest_followers_number(self):
 
         n_followers = 7
-        count = 'example'
+        count = "example"
 
         db.func = MagicMock()
         db.func.count.return_value = count
@@ -344,10 +345,8 @@ class DBTest(unittest.TestCase):
         db.init_db(model)
 
         # Call the method
-        params = {
-            'datarequest_id': 'example_uuid_v4'
-        }
-        db.DataRequestFollower.id = 'id'
+        params = {"datarequest_id": "example_uuid_v4"}
+        db.DataRequestFollower.id = "id"
         result = db.DataRequestFollower.get_datarequest_followers_number(**params)
 
         # Assertions
@@ -355,4 +354,3 @@ class DBTest(unittest.TestCase):
         query.filter_by.assert_called_once_with(**params)
         model.Session.query.assert_called_once_with(count)
         db.func.count.assert_called_once_with(db.DataRequestFollower.id)
-
