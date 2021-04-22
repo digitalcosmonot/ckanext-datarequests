@@ -165,54 +165,52 @@ class DataRequestsPlugin(p.SingletonPlugin):
         """
         rules = [
             (
-                "/{}".format(constants.DATAREQUESTS_MAIN_PATH),
+                f"/{constants.DATAREQUESTS_MAIN_PATH}",
                 "index",
                 ui_controller.index,
             ),
             (
-                "/{}/new".format(constants.DATAREQUESTS_MAIN_PATH),
+                f"/{constants.DATAREQUESTS_MAIN_PATH}/new",
                 "new",
                 ui_controller.new,
             ),
             (
-                "/{}/<id>".format(constants.DATAREQUESTS_MAIN_PATH),
+                f"/{constants.DATAREQUESTS_MAIN_PATH}/<id>",
                 "show",
                 ui_controller.show,
             ),
             (
-                "/{}/edit/<id>".format(constants.DATAREQUESTS_MAIN_PATH),
+                f"/{constants.DATAREQUESTS_MAIN_PATH}/edit/<id>",
                 "update",
                 ui_controller.update,
             ),
             (
-                "/{}/delete/<id>".format(constants.DATAREQUESTS_MAIN_PATH),
+                f"/{constants.DATAREQUESTS_MAIN_PATH}/delete/<id>",
                 "delete",
                 ui_controller.delete,
             ),
             (
-                "/{}/close/<id>".format(constants.DATAREQUESTS_MAIN_PATH),
+                f"/{constants.DATAREQUESTS_MAIN_PATH}/close/<id>",
                 "close",
                 ui_controller.close,
             ),
             (
-                "/{}/follow/<datarequest_id>".format(constants.DATAREQUESTS_MAIN_PATH),
+                f"/{constants.DATAREQUESTS_MAIN_PATH}/follow/<datarequest_id>",
                 "follow",
                 ui_controller.follow,
             ),
             (
-                "/{}/unfollow/<datarequest_id>".format(
-                    constants.DATAREQUESTS_MAIN_PATH
-                ),
+                f"/{constants.DATAREQUESTS_MAIN_PATH}/unfollow/<datarequest_id>",
                 "unfollow",
                 ui_controller.unfollow,
             ),
             (
-                "/organization/{}/<id>".format(constants.DATAREQUESTS_MAIN_PATH),
+                f"/organization/{constants.DATAREQUESTS_MAIN_PATH}/<id>",
                 "organization",
                 ui_controller.organization,
             ),
             (
-                "/user/{}/<id>".format(constants.DATAREQUESTS_MAIN_PATH),
+                f"/user/{constants.DATAREQUESTS_MAIN_PATH}/<id>",
                 "user",
                 ui_controller.user,
             ),
@@ -222,14 +220,12 @@ class DataRequestsPlugin(p.SingletonPlugin):
             rules.extend(
                 [
                     (
-                        "/{}/comment/<id>".format(constants.DATAREQUESTS_MAIN_PATH),
+                        f"/{constants.DATAREQUESTS_MAIN_PATH}/comment/<id>",
                         "comment",
                         ui_controller.comment,
                     ),
                     (
-                        "/{}/comment/<datarequest_id>/delete/<comment_id>".format(
-                            constants.DATAREQUESTS_MAIN_PATH
-                        ),
+                        f"/{constants.DATAREQUESTS_MAIN_PATH}/comment/<datarequest_id>/delete/<comment_id>",
                         "delete_comment",
                         ui_controller.delete_comment,
                     ),
@@ -292,4 +288,4 @@ class DataRequestsPlugin(p.SingletonPlugin):
         This implementation assumes the gettext domain is
         ckanext-{extension name}, hence your pot, po and mo files should be
         named ckanext-{extension name}.mo"""
-        return "ckanext-{name}".format(name=self.name)
+        return f"ckanext-{self.name}"

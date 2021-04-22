@@ -283,10 +283,10 @@ class ActionsTest(unittest.TestCase):
                 "site_url": "ckan.site_url",
             }
             base_mock.render_jinja2.assert_any_call(
-                "emails/subjects/{0}.txt".format(action_type), extra_args
+                f"emails/subjects/{action_type}.txt", extra_args
             )
             base_mock.render_jinja2.assert_any_call(
-                "emails/bodies/{0}.txt".format(action_type), extra_args
+                f"emails/bodies/{action_type}.txt", extra_args
             )
 
             mailer_mock.mail_user.assert_any_call(
@@ -324,10 +324,10 @@ class ActionsTest(unittest.TestCase):
             "site_url": "ckan.site_url",
         }
         base_mock.render_jinja2.assert_any_call(
-            "emails/subjects/{0}.txt".format(action_type), extra_args
+            f"emails/subjects/{action_type}.txt", extra_args
         )
         base_mock.render_jinja2.assert_any_call(
-            "emails/bodies/{0}.txt".format(action_type), extra_args
+            f"emails/bodies/{action_type}.txt", extra_args
         )
 
         mailer_mock.mail_user.assert_any_call(user, subject, body)
@@ -1283,8 +1283,8 @@ class ActionsTest(unittest.TestCase):
             test_data.follow_data_request_data,
         )
 
-    def test_follow_no_id(self):
-        self._test_no_id(actions.follow_datarequest)
+    def test_unfollow_no_id(self):
+        self._test_no_id(actions.unfollow_datarequest)
 
     def test_unfollow_not_following(self):
         # Configure the mock

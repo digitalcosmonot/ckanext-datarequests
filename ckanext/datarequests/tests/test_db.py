@@ -126,7 +126,7 @@ class DBTest(unittest.TestCase):
         if "desc" in expected_filter_by_params:
             expected_filter_by_params.pop("desc")
 
-        query = "%{0}%".format(params["q"]) if "q" in params else None
+        query = f'%{params["q"]}%' if "q" in params else None
         desc = True if "desc" in params and params["desc"] is True else False
 
         # Assertions

@@ -75,7 +75,7 @@ def init_db(model):
                     params["closed"] = closed
 
                 if q is not None:
-                    search_expr = "%{0}%".format(q)
+                    search_expr = f"%{q}%"
                     query = query.filter(
                         or_(
                             cls.title.ilike(search_expr),

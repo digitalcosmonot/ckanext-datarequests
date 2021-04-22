@@ -99,8 +99,7 @@ class UIControllerTest(unittest.TestCase):
         )
         controller.tk.abort.assert_called_once_with(
             403,
-            "You are not authorized to %s the Data Request %s"
-            % (action, datarequest_id),
+            f"You are not authorized to {action} the Data Request {datarequest_id}"
         )
         self.assertEquals(0, controller.tk.render.call_count)
         self.assertIsNone(result)
@@ -125,7 +124,7 @@ class UIControllerTest(unittest.TestCase):
         # Assertions
         controller.tk.get_action.assert_any_call(get_action_func)
         controller.tk.abort.assert_called_once_with(
-            404, "Data Request %s not found" % datarequest_id
+            404, f"Data Request {datarequest_id} not found"
         )
         self.assertEquals(0, controller.tk.render.call_count)
         self.assertIsNone(result)
@@ -477,7 +476,7 @@ class UIControllerTest(unittest.TestCase):
         else:
             controller.tk.abort.assert_called_once_with(
                 403,
-                "You are not authorized to update the Data Request %s" % datarequest_id,
+                f"You are not authorized to update the Data Request {datarequest_id}",
             )
             self.assertEquals(0, controller.tk.render.call_count)
 
@@ -705,9 +704,9 @@ class UIControllerTest(unittest.TestCase):
         self.assertEquals(expected_response["count"], page_arguments["item_count"])
         self.assertEquals(expected_response["result"], page_arguments["collection"])
         silly_page = 72
-        query_param = "q={0}&".format(query) if query else ""
+        query_param = f"q={query}&" if query else ""
         self.assertEquals(
-            "%s?%ssort=%s&page=%d" % (base_url, query_param, expected_sort, silly_page),
+            f"{base_url}?{query_param}sort={expected_sort}&page={silly_page}",
             page_arguments["url"](q=query, page=silly_page),
         )
 
@@ -789,9 +788,7 @@ class UIControllerTest(unittest.TestCase):
             self.expected_context, expected_data_dict
         )
         controller.helpers.flash_notice.assert_called_once_with(
-            controller.tk._(
-                "Data Request %s has been deleted" % datarequest.get("title")
-            )
+            controller.tk._("Data Request {title} has been deleted").format(title=datarequest.get("title", ""))
         )
 
         # Redirection
@@ -958,8 +955,7 @@ class UIControllerTest(unittest.TestCase):
         )
         controller.tk.abort.assert_called_once_with(
             403,
-            "You are not authorized to list the comments of the Data Request %s"
-            % datarequest_id,
+            f"You are not authorized to list the comments of the Data Request {datarequest_id}",
         )
         self.assertEquals(0, controller.tk.render.call_count)
         self.assertIsNone(result)
@@ -976,7 +972,7 @@ class UIControllerTest(unittest.TestCase):
         # Assertions
         controller.tk.get_action(constants.COMMENT_DATAREQUEST)
         controller.tk.abort.assert_called_once_with(
-            404, "Data Request %s not found" % datarequest_id
+            404, f"Data Request {datarequest_id} not found"
         )
         self.assertEquals(0, controller.tk.render.call_count)
         self.assertIsNone(result)
@@ -1094,7 +1090,7 @@ class UIControllerTest(unittest.TestCase):
         if comment_or_update_exception == controller.tk.NotAuthorized:
             action = "comment" if new_comment else "update comment"
             controller.tk.abort.assert_called_once_with(
-                403, "You are not authorized to %s" % action
+                403, f"You are not authorized to {action}"
             )
 
         if type(comment_or_update_exception) == controller.tk.ObjectNotFound:
@@ -1170,7 +1166,7 @@ class UIControllerTest(unittest.TestCase):
         # Assertions
         controller.tk.get_action(constants.DELETE_DATAREQUEST_COMMENT)
         controller.tk.abort.assert_called_once_with(
-            404, "Comment %s not found" % comment_id
+            404, f"Comment {comment_id} not found"
         )
         self.assertEquals(0, controller.tk.render.call_count)
         self.assertIsNone(result)

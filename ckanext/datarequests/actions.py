@@ -166,16 +166,16 @@ def _send_mail(user_ids, action_type, datarequest):
             }
 
             subject = base.render_jinja2(
-                "emails/subjects/{0}.txt".format(action_type), extra_vars
+                f"emails/subjects/{action_type}.txt", extra_vars
             )
             body = base.render_jinja2(
-                "emails/bodies/{0}.txt".format(action_type), extra_vars
+                f"emails/bodies/{action_type}.txt", extra_vars
             )
 
             mailer.mail_user(user_data, subject, body)
 
         except Exception:
-            logging.exception("Error sending notification to {0}".format(user_id))
+            logging.exception(f"Error sending notification to {user_id}")
 
 
 def create_datarequest(context, data_dict):
@@ -269,7 +269,7 @@ def show_datarequest(context, data_dict):
     result = db.DataRequest.get(id=datarequest_id)
     if not result:
         raise tk.ObjectNotFound(
-            tk._("Data Request %s not found in the data base") % datarequest_id
+            tk._("Data Request {datarequest_id} not found in the data base").format(datarequest_id=datarequest_id)
         )
 
     data_req = result[0]
@@ -324,7 +324,7 @@ def update_datarequest(context, data_dict):
     result = db.DataRequest.get(id=datarequest_id)
     if not result:
         raise tk.ObjectNotFound(
-            tk._("Data Request %s not found in the data base") % datarequest_id
+            tk._("Data Request {datarequest_id} not found in the data base").format(datarequest_id=datarequest_id)
         )
 
     data_req = result[0]
@@ -522,7 +522,7 @@ def delete_datarequest(context, data_dict):
     result = db.DataRequest.get(id=datarequest_id)
     if not result:
         raise tk.ObjectNotFound(
-            tk._("Data Request %s not found in the data base") % datarequest_id
+            tk._("Data Request {datarequest_id} not found in the data base").format(datarequest_id=datarequest_id)
         )
 
     data_req = result[0]
@@ -570,7 +570,7 @@ def close_datarequest(context, data_dict):
     result = db.DataRequest.get(id=datarequest_id)
     if not result:
         raise tk.ObjectNotFound(
-            tk._("Data Request %s not found in the data base") % datarequest_id
+            tk._("Data Request {datarequest_id} not found in the data base").format(datarequest_id=datarequest_id)
         )
 
     # Validate data
@@ -680,7 +680,7 @@ def show_datarequest_comment(context, data_dict):
     result = db.Comment.get(id=comment_id)
     if not result:
         raise tk.ObjectNotFound(
-            tk._("Comment %s not found in the data base") % comment_id
+            tk._("Comment {comment_id} not found in the data base").format(comment_id=comment_id)
         )
 
     return _dictize_comment(result[0])
@@ -777,7 +777,7 @@ def update_datarequest_comment(context, data_dict):
     result = db.Comment.get(id=comment_id)
     if not result:
         raise tk.ObjectNotFound(
-            tk._("Comment %s not found in the data base") % comment_id
+            tk._("Comment {comment_id} not found in the data base").format(comment_id=comment_id)
         )
 
     comment = result[0]
@@ -825,7 +825,7 @@ def delete_datarequest_comment(context, data_dict):
     result = db.Comment.get(id=comment_id)
     if not result:
         raise tk.ObjectNotFound(
-            tk._("Comment %s not found in the data base") % comment_id
+            tk._("Comment {comment_id} not found in the data base").format(comment_id=comment_id)
         )
 
     comment = result[0]
@@ -869,7 +869,7 @@ def follow_datarequest(context, data_dict):
     result = db.DataRequest.get(id=datarequest_id)
     if not result:
         raise tk.ObjectNotFound(
-            tk._("Data Request %s not found in the data base") % datarequest_id
+            tk._("Data Request {datarequest_id} not found in the data base").format(datarequest_id=datarequest_id)
         )
 
     # Is already following?

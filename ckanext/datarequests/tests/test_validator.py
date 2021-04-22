@@ -75,8 +75,7 @@ class ValidatorTest(unittest.TestCase):
                 "Title",
                 generate_string(validator.constants.NAME_MAX_LENGTH + 1),
                 False,
-                "Title must be a maximum of %d characters long"
-                % validator.constants.NAME_MAX_LENGTH,
+                f"Title must be a maximum of {validator.constants.NAME_MAX_LENGTH} characters long",
             ),
             ("Title", "", False, "Title cannot be empty"),
             ("Title", "DR Example Tile", True, "That title is already in use"),
@@ -84,8 +83,7 @@ class ValidatorTest(unittest.TestCase):
                 "Description",
                 generate_string(validator.constants.DESCRIPTION_MAX_LENGTH + 1),
                 False,
-                "Description must be a maximum of %d characters long"
-                % validator.constants.DESCRIPTION_MAX_LENGTH,
+                f"Description must be a maximum of {validator.constants.DESCRIPTION_MAX_LENGTH} characters long",
             ),
         ]
     )
@@ -176,8 +174,7 @@ class ValidatorTest(unittest.TestCase):
                     )
                 },
                 "Comment",
-                "Comments must be a maximum of %d characters long"
-                % validator.constants.COMMENT_MAX_LENGTH,
+                f"Comments must be a maximum of {validator.constants.COMMENT_MAX_LENGTH} characters long",
             ),
         ]
     )

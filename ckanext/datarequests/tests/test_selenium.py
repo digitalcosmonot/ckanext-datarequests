@@ -33,7 +33,7 @@ import ckanext.datarequests.db as db
 
 
 def _generate_random_string(length):
-    return "".join(random.choice(string.ascii_lowercase) for _ in xrange(length))
+    return "".join(random.choice(string.ascii_lowercase) for _ in range(length))
 
 
 class TestSelenium(unittest.TestCase):
@@ -121,7 +121,7 @@ class TestSelenium(unittest.TestCase):
 
     def default_register(self, user):
         pwd = user.ljust(8, "0")
-        self.register(user, user, "%s@conwet.com" % user, pwd)
+        self.register(user, user, f"{user}@conwet.com", pwd)
         return pwd
 
     def login(self, username, password):
@@ -270,10 +270,10 @@ class TestSelenium(unittest.TestCase):
         elif n_datarequests == 1:
             text = "1 data request found"
         else:
-            text = "%d data requests found" % n_datarequests
+            text = f"{n_datarequests} data requests found"
 
         if search:
-            text += ' for "%s"' % search
+            text += f' for "{search}"'
 
         self.assertEqual(
             text, self.driver.find_element_by_css_selector(".primary h2").text
@@ -612,10 +612,10 @@ class TestSelenium(unittest.TestCase):
         def _check_pages(last_available):
 
             for i in range(1, last_available + 1):
-                self.assertTrue(self.is_element_present(By.LINK_TEXT, "{0}".format(i)))
+                self.assertTrue(self.is_element_present(By.LINK_TEXT, f"{i}"))
 
             self.assertFalse(
-                self.is_element_present(By.LINK_TEXT, "{0}".format(last_available + 1))
+                self.is_element_present(By.LINK_TEXT, f"{(last_available + 1)}")
             )
 
         user = "user1"
@@ -626,7 +626,7 @@ class TestSelenium(unittest.TestCase):
         self.login(user, pwd)
 
         for i in range(n_datarequests):
-            datarequest_title = "{0} {1}".format(base_name, i)
+            datarequest_title = f"{base_name} {i}"
             datarequest_description = "Example Description"
             datarequest_id = self.create_datarequest(
                 datarequest_title, datarequest_description
@@ -642,7 +642,7 @@ class TestSelenium(unittest.TestCase):
             "Oldest"
         )
         self.assertTrue(
-            self.is_element_present(By.LINK_TEXT, "{0} {1}".format(base_name, 0))
+            self.is_element_present(By.LINK_TEXT, f"{base_name} 0")
         )
         self.check_datarequests_counter(n_datarequests)
 
@@ -655,13 +655,13 @@ class TestSelenium(unittest.TestCase):
         self.driver.find_element_by_link_text("2").click()
         self.assertTrue(
             self.is_element_present(
-                By.LINK_TEXT, "{0} {1}".format(base_name, n_datarequests - 1)
+                By.LINK_TEXT, f"{base_name} {(n_datarequests - 1)}"
             )
         )
         self.check_n_datarequests(1)
 
         for i in range(n_datarequests):
-            datarequest_title = "test {0}".format(i)
+            datarequest_title = f"test {i}"
             datarequest_description = "Example Description"
             datarequest_id = self.create_datarequest(
                 datarequest_title, datarequest_description
@@ -818,7 +818,7 @@ class TestSelenium(unittest.TestCase):
         )
 
         for i in range(10):
-            self.comment_datarequest(datarequest_id, "comment {0}".format(i))
+            self.comment_datarequest(datarequest_id, f"comment {i}")
 
             # Last comment should be always visible
             comments = self.driver.find_elements_by_xpath(
