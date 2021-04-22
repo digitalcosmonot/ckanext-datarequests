@@ -238,7 +238,7 @@ Once the translation files (`po`) have been updated, compile them by running:
 python setup.py compile_catalog
 ```
 
-This will generate the required `mo` file. Once this file has been generated, commit your changes and create a Pull Request (to the `develop` branch). 
+This will generate the required `mo` file. Once this file has been generated, commit your changes and create a Pull Request (to the `develop` branch).
 
 ## Tests
 
@@ -249,52 +249,3 @@ python setup.py nosetests
 **Note:** The `test.ini` file contains a link to the CKAN `test-core.ini` file. You will need to change that link to the real path of the file in your system (generally `/usr/lib/ckan/default/src/ckan/test-core.ini`).
 
 **Note 2:** When creating a PR that includes code changes, please, ensure your new code is tested. No PR will be merged until the Travis CI system marks it as valid.
-
-## Changelog
-
-### v1.2.0 (UNRELEASED)
-
-* New: French translations (thanks to @bobeal)
-* New: Romanian translations (thanks to @costibleotu)
-* New: Option to force users to introduce a request description (thanks to @MarkCalvert)
-* Fix: Documentation fixes (thanks to @nykc)
-* Fix: Datarequests creation and closing times displayed incorrectly (thanks to @iamarnavgarg)
-
-### v1.1.0
-
-* New: Compatibility with CKAN 2.8.0
-* New: Somali translation (thanks to @SimuliChina)
-
-### v1.0.0
-
-* New: Option to follow data requests.
-* New: Email notifications:
-  * An email will be sent to organization staff when a data request is created in a organization.
-  * An email will be sent to followers, people that commented, datarequest creator and organization staff when a comment in a datarequest is created.
-  * An email will be sent to followers, people that commented, datarequest creator and organization staff when a data request is closed.
-* New: Major API changes:
-  * `datarequest_create` :arrow_right: `create_datarequest`
-  * `datarequest_show` :arrow_right: `show_datarequest`
-  * `datarequest_update` :arrow_right: `update_datarequest`
-  * `datarequest_index` :arrow_right: `list_datarequests`
-  * `datarequest_delete` :arrow_right: `delete_datarequest`
-  * `datarequest_close` :arrow_right: `close_datarequest`
-  * `datarequest_comment` :arrow_right: `comment_datarequest`
-  * `datarequest_comment_show` :arrow_right: `show_datarequest_comment`
-  * `datarequest_comment_list` :arrow_right: `list_datarequest_comments`
-  * `datarequest_comment_update` :arrow_right: `update_datarequest_comment`
-  * `datarequest_comment_delete` :arrow_right: `delete_datarequest_comment`
-
-### v0.4.1
-
-* New: Brazilian Portuguese translation (thanks to @allysonbarros)
-
-### v0.4.0
-
-* New: Move CI to Travis
-* New: Compatibility with CKAN 2.7 (controller adapted by @owl17)
-
-### v0.3.3
-
-* New: German Translation (thanks to @kvlahrosch)
-

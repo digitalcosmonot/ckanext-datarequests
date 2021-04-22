@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright (c) 2015-2016 CoNWeT Lab., Universidad Politécnica de Madrid
 
 # This file is part of CKAN Data Requests Extension.
@@ -17,28 +15,29 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with CKAN Data Requests Extension. If not, see <http://www.gnu.org/licenses/>.
 
-import os
-import sys
-
 from setuptools import find_packages, setup
 
-version = "1.1.0"
+version = "2.0.0"
 
 setup(
     name="ckanext-datarequests",
     version=version,
     description="CKAN Extension - Data Requests",
     long_description="""
-    CKAN extension that allows users to ask for datasets that are not already published in the CKAN instance. 
+    CKAN extension that allows users to ask for datasets that are not already published in the CKAN instance.
     In this way we can set up a Data Market, not only with data supplies but also with data demands.
     """,
-    classifiers=[],  # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: GNU Affero General Public License v3",
+        "Operating System :: OS Independent",
+    ],  # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
     keywords="",
     author="CoNWeT Lab.",
     author_email="amagan@conwet.com",
     url="https://conwet.fi.upm.es",
     download_url="https://github.com/conwetlab/ckanext-datarequests/tarball/v" + version,
-    license="GNU Affero General Public License",
+    license="GNU Affero General Public License v3",
     packages=find_packages(exclude=["ez_setup", "examples", "tests"]),
     namespace_packages=["ckanext", "ckanext.datarequests"],
     include_package_data=True,
@@ -50,7 +49,6 @@ setup(
     tests_require=["nose_parameterized==0.3.3", "selenium==2.53", "coveralls==1.1"],
     test_suite="nosetests",
     entry_points="""
-
         [ckan.plugins]
         datarequests=ckanext.datarequests.plugin:DataRequestsPlugin
 

@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with CKAN Data Requests Extension. If not, see <http://www.gnu.org/licenses/>.
 
-import cgi
+import html
 import datetime
 import logging
 
@@ -115,7 +115,7 @@ def _dictize_comment(comment):
 
 
 def _undictize_comment_basic(comment, data_dict):
-    comment.comment = cgi.escape(data_dict.get("comment", ""))
+    comment.comment = html.escape(data_dict.get("comment", ""))
     comment.datarequest_id = data_dict.get("datarequest_id", "")
 
 
@@ -409,7 +409,7 @@ def list_datarequests(context, data_dict):
     datarequests = []
     offset = data_dict.get("offset", 0)
     limit = data_dict.get("limit", constants.DATAREQUESTS_PER_PAGE)
-    for data_req in db_datarequests[offset : offset + limit]:
+    for data_req in db_datarequests[offset:(offset + limit)]:
         datarequests.append(_dictize_datarequest(data_req))
 
     # Facets
@@ -439,7 +439,7 @@ def list_datarequests(context, data_dict):
                     "count": no_processed_organization_facet[organization_id],
                 }
             )
-        except:
+        except Exception:
             pass
 
     state_facet = []

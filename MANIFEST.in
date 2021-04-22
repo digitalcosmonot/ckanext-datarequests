@@ -1,4 +1,7 @@
+include LICENSE
+include CHANGELOG.md
+include README.md
 recursive-include ckanext/datarequests/templates *
 recursive-include ckanext/datarequests/public *
-recursive-include ckanext/datarequests/fanstatic *
+recursive-include ckanext/datarequests/assets *
 recursive-include ckanext/datarequests/i18n *
