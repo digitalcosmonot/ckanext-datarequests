@@ -53,7 +53,9 @@ class HelpersTest(unittest.TestCase):
 
         # Assertions
         helpers.db.init_db.assert_called_once_with(helpers.model)
-        helpers.db.Comment.get_comment_datarequests_number.assert_called_once_with(datarequest_id=datarequest_id)
+        helpers.db.Comment.get_comment_datarequests_number.assert_called_once_with(
+            datarequest_id=datarequest_id
+        )
         self.assertEquals(result, n_comments)
 
     def test_get_comments_badge(self):
@@ -67,7 +69,9 @@ class HelpersTest(unittest.TestCase):
 
         # Assertions
         helpers.db.init_db.assert_called_once_with(helpers.model)
-        helpers.db.Comment.get_comment_datarequests_number.assert_called_once_with(datarequest_id=datarequest_id)
+        helpers.db.Comment.get_comment_datarequests_number.assert_called_once_with(
+            datarequest_id=datarequest_id
+        )
         self.assertEquals(result, helpers.tk.render_snippet.return_value)
         helpers.tk.render_snippet.assert_called_once_with(
             "datarequests/snippets/badge.html", {"comments_count": n_comments}
@@ -76,7 +80,9 @@ class HelpersTest(unittest.TestCase):
     def test_get_open_datarequests_number(self):
         # Mocking
         n_datarequests = 3
-        helpers.db.DataRequest.get_open_datarequests_number.return_value = n_datarequests
+        helpers.db.DataRequest.get_open_datarequests_number.return_value = (
+            n_datarequests
+        )
 
         # Call the function
         result = helpers.get_open_datarequests_number()
@@ -89,7 +95,9 @@ class HelpersTest(unittest.TestCase):
     def test_get_open_datarequests_badge_true(self):
         # Mocking
         n_datarequests = 3
-        helpers.db.DataRequest.get_open_datarequests_number.return_value = n_datarequests
+        helpers.db.DataRequest.get_open_datarequests_number.return_value = (
+            n_datarequests
+        )
 
         # Call the function
         result = helpers.get_open_datarequests_badge(True)

@@ -15,8 +15,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with CKAN Data Requests Extension. If not, see <http://www.gnu.org/licenses/>.
 
-import html
 import datetime
+import html
 import logging
 
 from ckan import model
@@ -91,7 +91,9 @@ def _dictize_datarequest(datarequest):
     if datarequest.accepted_dataset_id:
         data_dict["accepted_dataset"] = _get_package(datarequest.accepted_dataset_id)
 
-    data_dict["followers"] = db.DataRequestFollower.get_datarequest_followers_number(datarequest_id=datarequest.id)
+    data_dict["followers"] = db.DataRequestFollower.get_datarequest_followers_number(
+        datarequest_id=datarequest.id
+    )
 
     return data_dict
 
@@ -127,9 +129,19 @@ def _get_datarequest_involved_users(context, datarequest_dict):
     # Creator + Followers + People who has commented + Organization Staff
     users = set()
     users.add(datarequest_dict["user_id"])
-    users.update([follower.user_id for follower in db.DataRequestFollower.get(datarequest_id=datarequest_id)])
     users.update(
-        [comment["user_id"] for comment in list_datarequest_comments(new_context, {"datarequest_id": datarequest_id})]
+        [
+            follower.user_id
+            for follower in db.DataRequestFollower.get(datarequest_id=datarequest_id)
+        ]
+    )
+    users.update(
+        [
+            comment["user_id"]
+            for comment in list_datarequest_comments(
+                new_context, {"datarequest_id": datarequest_id}
+            )
+        ]
     )
 
     if datarequest_dict["organization"]:
@@ -153,8 +165,12 @@ def _send_mail(user_ids, action_type, datarequest):
                 "site_url": config.get("ckan.site_url"),
             }
 
-            subject = base.render_jinja2("emails/subjects/{0}.txt".format(action_type), extra_vars)
-            body = base.render_jinja2("emails/bodies/{0}.txt".format(action_type), extra_vars)
+            subject = base.render_jinja2(
+                "emails/subjects/{0}.txt".format(action_type), extra_vars
+            )
+            body = base.render_jinja2(
+                "emails/bodies/{0}.txt".format(action_type), extra_vars
+            )
 
             mailer.mail_user(user_data, subject, body)
 
@@ -252,7 +268,9 @@ def show_datarequest(context, data_dict):
     # Get the data request
     result = db.DataRequest.get(id=datarequest_id)
     if not result:
-        raise tk.ObjectNotFound(tk._("Data Request %s not found in the data base") % datarequest_id)
+        raise tk.ObjectNotFound(
+            tk._("Data Request %s not found in the data base") % datarequest_id
+        )
 
     data_req = result[0]
     data_dict = _dictize_datarequest(data_req)
@@ -305,7 +323,9 @@ def update_datarequest(context, data_dict):
     # Get the initial data
     result = db.DataRequest.get(id=datarequest_id)
     if not result:
-        raise tk.ObjectNotFound(tk._("Data Request %s not found in the data base") % datarequest_id)
+        raise tk.ObjectNotFound(
+            tk._("Data Request %s not found in the data base") % datarequest_id
+        )
 
     data_req = result[0]
 
@@ -380,7 +400,9 @@ def list_datarequests(context, data_dict):
     organization_id = data_dict.get("organization_id", None)
     if organization_id:
         # Get organization ID (organization name is received sometimes)
-        organization_id = organization_show({"ignore_auth": True}, {"id": organization_id}).get("id")
+        organization_id = organization_show(
+            {"ignore_auth": True}, {"id": organization_id}
+        ).get("id")
 
     user_id = data_dict.get("user_id", None)
     if user_id:
@@ -409,7 +431,7 @@ def list_datarequests(context, data_dict):
     datarequests = []
     offset = data_dict.get("offset", 0)
     limit = data_dict.get("limit", constants.DATAREQUESTS_PER_PAGE)
-    for data_req in db_datarequests[offset:(offset + limit)]:
+    for data_req in db_datarequests[offset : (offset + limit)]:
         datarequests.append(_dictize_datarequest(data_req))
 
     # Facets
@@ -431,7 +453,9 @@ def list_datarequests(context, data_dict):
     organization_facet = []
     for organization_id in no_processed_organization_facet:
         try:
-            organization = organization_show({"ignore_auth": True}, {"id": organization_id})
+            organization = organization_show(
+                {"ignore_auth": True}, {"id": organization_id}
+            )
             organization_facet.append(
                 {
                     "name": organization.get("name"),
@@ -446,7 +470,11 @@ def list_datarequests(context, data_dict):
     for state in no_processed_state_facet:
         if no_processed_state_facet[state]:
             state_facet.append(
-                {"name": state.lower(), "display_name": tk._(state), "count": no_processed_state_facet[state]}
+                {
+                    "name": state.lower(),
+                    "display_name": tk._(state),
+                    "count": no_processed_state_facet[state],
+                }
             )
 
     result = {"count": len(db_datarequests), "facets": {}, "result": datarequests}
@@ -493,7 +521,9 @@ def delete_datarequest(context, data_dict):
     # Get the data request
     result = db.DataRequest.get(id=datarequest_id)
     if not result:
-        raise tk.ObjectNotFound(tk._("Data Request %s not found in the data base") % datarequest_id)
+        raise tk.ObjectNotFound(
+            tk._("Data Request %s not found in the data base") % datarequest_id
+        )
 
     data_req = result[0]
     session.delete(data_req)
@@ -539,7 +569,9 @@ def close_datarequest(context, data_dict):
     # Get the data request
     result = db.DataRequest.get(id=datarequest_id)
     if not result:
-        raise tk.ObjectNotFound(tk._("Data Request %s not found in the data base") % datarequest_id)
+        raise tk.ObjectNotFound(
+            tk._("Data Request %s not found in the data base") % datarequest_id
+        )
 
     # Validate data
     validator.validate_datarequest_closing(context, data_dict)
@@ -647,7 +679,9 @@ def show_datarequest_comment(context, data_dict):
     # Get comments
     result = db.Comment.get(id=comment_id)
     if not result:
-        raise tk.ObjectNotFound(tk._("Comment %s not found in the data base") % comment_id)
+        raise tk.ObjectNotFound(
+            tk._("Comment %s not found in the data base") % comment_id
+        )
 
     return _dictize_comment(result[0])
 
@@ -698,7 +732,9 @@ def list_datarequest_comments(context, data_dict):
     tk.check_access(constants.LIST_DATAREQUEST_COMMENTS, context, data_dict)
 
     # Get comments
-    comments_db = db.Comment.get_ordered_by_date(datarequest_id=datarequest_id, desc=desc)
+    comments_db = db.Comment.get_ordered_by_date(
+        datarequest_id=datarequest_id, desc=desc
+    )
 
     comments_list = []
     for comment in comments_db:
@@ -740,7 +776,9 @@ def update_datarequest_comment(context, data_dict):
     # Get the data request
     result = db.Comment.get(id=comment_id)
     if not result:
-        raise tk.ObjectNotFound(tk._("Comment %s not found in the data base") % comment_id)
+        raise tk.ObjectNotFound(
+            tk._("Comment %s not found in the data base") % comment_id
+        )
 
     comment = result[0]
 
@@ -786,7 +824,9 @@ def delete_datarequest_comment(context, data_dict):
     # Get the comment
     result = db.Comment.get(id=comment_id)
     if not result:
-        raise tk.ObjectNotFound(tk._("Comment %s not found in the data base") % comment_id)
+        raise tk.ObjectNotFound(
+            tk._("Comment %s not found in the data base") % comment_id
+        )
 
     comment = result[0]
 
@@ -828,13 +868,17 @@ def follow_datarequest(context, data_dict):
     # Get the data request
     result = db.DataRequest.get(id=datarequest_id)
     if not result:
-        raise tk.ObjectNotFound(tk._("Data Request %s not found in the data base") % datarequest_id)
+        raise tk.ObjectNotFound(
+            tk._("Data Request %s not found in the data base") % datarequest_id
+        )
 
     # Is already following?
     user_id = context["auth_user_obj"].id
     result = db.DataRequestFollower.get(datarequest_id=datarequest_id, user_id=user_id)
     if result:
-        raise tk.ValidationError([tk._("The user is already following the given Data Request")])
+        raise tk.ValidationError(
+            [tk._("The user is already following the given Data Request")]
+        )
 
     # Store the data
     follower = db.DataRequestFollower()
@@ -881,7 +925,9 @@ def unfollow_datarequest(context, data_dict):
     user_id = context["auth_user_obj"].id
     result = db.DataRequestFollower.get(datarequest_id=datarequest_id, user_id=user_id)
     if not result:
-        raise tk.ObjectNotFound([tk._("The user is not following the given Data Request")])
+        raise tk.ObjectNotFound(
+            [tk._("The user is not following the given Data Request")]
+        )
 
     follower = result[0]
 

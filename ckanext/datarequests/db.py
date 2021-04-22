@@ -51,10 +51,15 @@ def init_db(model):
             def datarequest_exists(cls, title):
                 """Returns true if there is a Data Request with the same title (case insensitive)"""
                 query = model.Session.query(cls).autoflush(False)
-                return query.filter(func.lower(cls.title) == func.lower(title)).first() is not None
+                return (
+                    query.filter(func.lower(cls.title) == func.lower(title)).first()
+                    is not None
+                )
 
             @classmethod
-            def get_ordered_by_date(cls, organization_id=None, user_id=None, closed=None, q=None, desc=False):
+            def get_ordered_by_date(
+                cls, organization_id=None, user_id=None, closed=None, q=None, desc=False
+            ):
                 """Personalized query"""
                 query = model.Session.query(cls).autoflush(False)
 
@@ -71,7 +76,12 @@ def init_db(model):
 
                 if q is not None:
                     search_expr = "%{0}%".format(q)
-                    query = query.filter(or_(cls.title.ilike(search_expr), cls.description.ilike(search_expr)))
+                    query = query.filter(
+                        or_(
+                            cls.title.ilike(search_expr),
+                            cls.description.ilike(search_expr),
+                        )
+                    )
 
                 order_by_filter = cls.open_time.desc() if desc else cls.open_time.asc()
 
@@ -80,7 +90,11 @@ def init_db(model):
             @classmethod
             def get_open_datarequests_number(cls):
                 """Returns the number of data requests that are open"""
-                return model.Session.query(func.count(cls.id)).filter_by(closed=False).scalar()
+                return (
+                    model.Session.query(func.count(cls.id))
+                    .filter_by(closed=False)
+                    .scalar()
+                )
 
         DataRequest = _DataRequest
 
@@ -90,11 +104,28 @@ def init_db(model):
             model.meta.metadata,
             sa.Column("user_id", sa.types.UnicodeText, primary_key=False, default=""),
             sa.Column("id", sa.types.UnicodeText, primary_key=True, default=uuid4),
-            sa.Column("title", sa.types.Unicode(constants.NAME_MAX_LENGTH), primary_key=True, default=""),
-            sa.Column("description", sa.types.Unicode(constants.DESCRIPTION_MAX_LENGTH), primary_key=False, default=""),
-            sa.Column("organization_id", sa.types.UnicodeText, primary_key=False, default=None),
+            sa.Column(
+                "title",
+                sa.types.Unicode(constants.NAME_MAX_LENGTH),
+                primary_key=True,
+                default="",
+            ),
+            sa.Column(
+                "description",
+                sa.types.Unicode(constants.DESCRIPTION_MAX_LENGTH),
+                primary_key=False,
+                default="",
+            ),
+            sa.Column(
+                "organization_id", sa.types.UnicodeText, primary_key=False, default=None
+            ),
             sa.Column("open_time", sa.types.DateTime, primary_key=False, default=None),
-            sa.Column("accepted_dataset_id", sa.types.UnicodeText, primary_key=False, default=None),
+            sa.Column(
+                "accepted_dataset_id",
+                sa.types.UnicodeText,
+                primary_key=False,
+                default=None,
+            ),
             sa.Column("close_time", sa.types.DateTime, primary_key=False, default=None),
             sa.Column("closed", sa.types.Boolean, primary_key=False, default=False),
         )
@@ -121,7 +152,11 @@ def init_db(model):
                 """Personalized query"""
                 query = model.Session.query(cls).autoflush(False)
                 order_by_filter = cls.time.desc() if desc else cls.time.asc()
-                return query.filter_by(datarequest_id=datarequest_id).order_by(order_by_filter).all()
+                return (
+                    query.filter_by(datarequest_id=datarequest_id)
+                    .order_by(order_by_filter)
+                    .all()
+                )
 
             @classmethod
             def get_comment_datarequests_number(cls, **kw):
@@ -138,9 +173,16 @@ def init_db(model):
             model.meta.metadata,
             sa.Column("id", sa.types.UnicodeText, primary_key=True, default=uuid4),
             sa.Column("user_id", sa.types.UnicodeText, primary_key=False, default=""),
-            sa.Column("datarequest_id", sa.types.UnicodeText, primary_key=True, default=uuid4),
+            sa.Column(
+                "datarequest_id", sa.types.UnicodeText, primary_key=True, default=uuid4
+            ),
             sa.Column("time", sa.types.DateTime, primary_key=True, default=""),
-            sa.Column("comment", sa.types.Unicode(constants.COMMENT_MAX_LENGTH), primary_key=False, default=""),
+            sa.Column(
+                "comment",
+                sa.types.Unicode(constants.COMMENT_MAX_LENGTH),
+                primary_key=False,
+                default="",
+            ),
         )
 
         # Create the table only if it does not exist
@@ -175,7 +217,9 @@ def init_db(model):
             model.meta.metadata,
             sa.Column("id", sa.types.UnicodeText, primary_key=True, default=uuid4),
             sa.Column("user_id", sa.types.UnicodeText, primary_key=False, default=""),
-            sa.Column("datarequest_id", sa.types.UnicodeText, primary_key=True, default=uuid4),
+            sa.Column(
+                "datarequest_id", sa.types.UnicodeText, primary_key=True, default=uuid4
+            ),
             sa.Column("time", sa.types.DateTime, primary_key=True, default=""),
         )
 

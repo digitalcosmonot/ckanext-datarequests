@@ -87,7 +87,9 @@ class DataRequestPluginTest(unittest.TestCase):
 
     def test_get_plus_icon_new(self):
 
-        is_fontawesome_4_patch = patch("ckanext.datarequests.plugin.is_fontawesome_4", return_value=True)
+        is_fontawesome_4_patch = patch(
+            "ckanext.datarequests.plugin.is_fontawesome_4", return_value=True
+        )
         is_fontawesome_4_patch.start()
         self.addCleanup(is_fontawesome_4_patch.stop)
 
@@ -95,7 +97,9 @@ class DataRequestPluginTest(unittest.TestCase):
 
     def test_get_plus_icon_old(self):
 
-        is_fontawesome_4_patch = patch("ckanext.datarequests.plugin.is_fontawesome_4", return_value=False)
+        is_fontawesome_4_patch = patch(
+            "ckanext.datarequests.plugin.is_fontawesome_4", return_value=False
+        )
         is_fontawesome_4_patch.start()
         self.addCleanup(is_fontawesome_4_patch.stop)
 
@@ -103,7 +107,9 @@ class DataRequestPluginTest(unittest.TestCase):
 
     def test_get_question_icon_new(self):
 
-        is_fontawesome_4_patch = patch("ckanext.datarequests.plugin.is_fontawesome_4", return_value=True)
+        is_fontawesome_4_patch = patch(
+            "ckanext.datarequests.plugin.is_fontawesome_4", return_value=True
+        )
         is_fontawesome_4_patch.start()
         self.addCleanup(is_fontawesome_4_patch.stop)
 
@@ -111,7 +117,9 @@ class DataRequestPluginTest(unittest.TestCase):
 
     def test_get_question_icon_old(self):
 
-        is_fontawesome_4_patch = patch("ckanext.datarequests.plugin.is_fontawesome_4", return_value=False)
+        is_fontawesome_4_patch = patch(
+            "ckanext.datarequests.plugin.is_fontawesome_4", return_value=False
+        )
         is_fontawesome_4_patch.start()
         self.addCleanup(is_fontawesome_4_patch.stop)
 
@@ -120,7 +128,9 @@ class DataRequestPluginTest(unittest.TestCase):
     @parameterized.expand([("True",), ("False",)])
     def test_get_actions(self, comments_enabled):
 
-        actions_len = TOTAL_ACTIONS if comments_enabled == "True" else ACTIONS_NO_COMMENTS
+        actions_len = (
+            TOTAL_ACTIONS if comments_enabled == "True" else ACTIONS_NO_COMMENTS
+        )
 
         # Configure config and create instance
         plugin.config.get.return_value = comments_enabled
@@ -130,25 +140,55 @@ class DataRequestPluginTest(unittest.TestCase):
         actions = self.plg_instance.get_actions()
 
         self.assertEquals(actions_len, len(actions))
-        self.assertEquals(plugin.actions.create_datarequest, actions[self.create_datarequest])
-        self.assertEquals(plugin.actions.show_datarequest, actions[self.show_datarequest])
-        self.assertEquals(plugin.actions.update_datarequest, actions[self.update_datarequest])
-        self.assertEquals(plugin.actions.list_datarequests, actions[self.list_datarequests])
-        self.assertEquals(plugin.actions.delete_datarequest, actions[self.delete_datarequest])
-        self.assertEquals(plugin.actions.follow_datarequest, actions[self.follow_datarequest])
-        self.assertEquals(plugin.actions.unfollow_datarequest, actions[self.unfollow_datarequest])
+        self.assertEquals(
+            plugin.actions.create_datarequest, actions[self.create_datarequest]
+        )
+        self.assertEquals(
+            plugin.actions.show_datarequest, actions[self.show_datarequest]
+        )
+        self.assertEquals(
+            plugin.actions.update_datarequest, actions[self.update_datarequest]
+        )
+        self.assertEquals(
+            plugin.actions.list_datarequests, actions[self.list_datarequests]
+        )
+        self.assertEquals(
+            plugin.actions.delete_datarequest, actions[self.delete_datarequest]
+        )
+        self.assertEquals(
+            plugin.actions.follow_datarequest, actions[self.follow_datarequest]
+        )
+        self.assertEquals(
+            plugin.actions.unfollow_datarequest, actions[self.unfollow_datarequest]
+        )
 
         if comments_enabled == "True":
-            self.assertEquals(plugin.actions.comment_datarequest, actions[self.comment_datarequest])
-            self.assertEquals(plugin.actions.list_datarequest_comments, actions[self.list_datarequest_comments])
-            self.assertEquals(plugin.actions.show_datarequest_comment, actions[self.show_datarequest_comment])
-            self.assertEquals(plugin.actions.update_datarequest_comment, actions[self.update_datarequest_comment])
-            self.assertEquals(plugin.actions.delete_datarequest_comment, actions[self.delete_datarequest_comment])
+            self.assertEquals(
+                plugin.actions.comment_datarequest, actions[self.comment_datarequest]
+            )
+            self.assertEquals(
+                plugin.actions.list_datarequest_comments,
+                actions[self.list_datarequest_comments],
+            )
+            self.assertEquals(
+                plugin.actions.show_datarequest_comment,
+                actions[self.show_datarequest_comment],
+            )
+            self.assertEquals(
+                plugin.actions.update_datarequest_comment,
+                actions[self.update_datarequest_comment],
+            )
+            self.assertEquals(
+                plugin.actions.delete_datarequest_comment,
+                actions[self.delete_datarequest_comment],
+            )
 
     @parameterized.expand([("True",), ("False",)])
     def test_get_auth_functions(self, comments_enabled):
 
-        auth_functions_len = TOTAL_ACTIONS if comments_enabled == "True" else ACTIONS_NO_COMMENTS
+        auth_functions_len = (
+            TOTAL_ACTIONS if comments_enabled == "True" else ACTIONS_NO_COMMENTS
+        )
 
         # Configure config and create instance
         plugin.config.get.return_value = comments_enabled
@@ -158,20 +198,49 @@ class DataRequestPluginTest(unittest.TestCase):
         auth_functions = self.plg_instance.get_auth_functions()
 
         self.assertEquals(auth_functions_len, len(auth_functions))
-        self.assertEquals(plugin.auth.create_datarequest, auth_functions[self.create_datarequest])
-        self.assertEquals(plugin.auth.show_datarequest, auth_functions[self.show_datarequest])
-        self.assertEquals(plugin.auth.update_datarequest, auth_functions[self.update_datarequest])
-        self.assertEquals(plugin.auth.list_datarequests, auth_functions[self.list_datarequests])
-        self.assertEquals(plugin.auth.delete_datarequest, auth_functions[self.delete_datarequest])
-        self.assertEquals(plugin.auth.follow_datarequest, auth_functions[self.follow_datarequest])
-        self.assertEquals(plugin.auth.unfollow_datarequest, auth_functions[self.unfollow_datarequest])
+        self.assertEquals(
+            plugin.auth.create_datarequest, auth_functions[self.create_datarequest]
+        )
+        self.assertEquals(
+            plugin.auth.show_datarequest, auth_functions[self.show_datarequest]
+        )
+        self.assertEquals(
+            plugin.auth.update_datarequest, auth_functions[self.update_datarequest]
+        )
+        self.assertEquals(
+            plugin.auth.list_datarequests, auth_functions[self.list_datarequests]
+        )
+        self.assertEquals(
+            plugin.auth.delete_datarequest, auth_functions[self.delete_datarequest]
+        )
+        self.assertEquals(
+            plugin.auth.follow_datarequest, auth_functions[self.follow_datarequest]
+        )
+        self.assertEquals(
+            plugin.auth.unfollow_datarequest, auth_functions[self.unfollow_datarequest]
+        )
 
         if comments_enabled == "True":
-            self.assertEquals(plugin.auth.comment_datarequest, auth_functions[self.comment_datarequest])
-            self.assertEquals(plugin.auth.list_datarequest_comments, auth_functions[self.list_datarequest_comments])
-            self.assertEquals(plugin.auth.show_datarequest_comment, auth_functions[self.show_datarequest_comment])
-            self.assertEquals(plugin.auth.update_datarequest_comment, auth_functions[self.update_datarequest_comment])
-            self.assertEquals(plugin.auth.delete_datarequest_comment, auth_functions[self.delete_datarequest_comment])
+            self.assertEquals(
+                plugin.auth.comment_datarequest,
+                auth_functions[self.comment_datarequest],
+            )
+            self.assertEquals(
+                plugin.auth.list_datarequest_comments,
+                auth_functions[self.list_datarequest_comments],
+            )
+            self.assertEquals(
+                plugin.auth.show_datarequest_comment,
+                auth_functions[self.show_datarequest_comment],
+            )
+            self.assertEquals(
+                plugin.auth.update_datarequest_comment,
+                auth_functions[self.update_datarequest_comment],
+            )
+            self.assertEquals(
+                plugin.auth.delete_datarequest_comment,
+                auth_functions[self.delete_datarequest_comment],
+            )
 
     def test_update_config(self):
         # Create instance
@@ -193,7 +262,9 @@ class DataRequestPluginTest(unittest.TestCase):
         self.plg_instance = plugin.DataRequestsPlugin()
 
         mock_icon = "icon"
-        get_question_icon_patch = patch("ckanext.datarequests.plugin.get_question_icon", return_value=mock_icon)
+        get_question_icon_patch = patch(
+            "ckanext.datarequests.plugin.get_question_icon", return_value=mock_icon
+        )
         get_question_icon_patch.start()
         self.addCleanup(get_question_icon_patch.stop)
 
@@ -306,7 +377,9 @@ class DataRequestPluginTest(unittest.TestCase):
                 conditions=dict(method=["GET", "POST"]),
             )
 
-    @parameterized.expand([("True", "True"), ("True", "False"), ("False", "True"), ("False", "False")])
+    @parameterized.expand(
+        [("True", "True"), ("True", "False"), ("False", "True"), ("False", "False")]
+    )
     def test_helpers(self, comments_enabled, show_datarequests_badge):
 
         # Configure config and get instance
@@ -320,11 +393,24 @@ class DataRequestPluginTest(unittest.TestCase):
         show_comments_expected = True if comments_enabled == "True" else False
         helpers = self.plg_instance.get_helpers()
         self.assertEquals(helpers["show_comments_tab"](), show_comments_expected)
-        self.assertEquals(helpers["get_comments_number"], plugin.helpers.get_comments_number)
-        self.assertEquals(helpers["get_comments_badge"], plugin.helpers.get_comments_badge)
-        self.assertEquals(helpers["get_open_datarequests_number"], plugin.helpers.get_open_datarequests_number)
-        self.assertEquals(helpers["get_open_datarequests_badge"], plugin.partial.return_value)
+        self.assertEquals(
+            helpers["get_comments_number"], plugin.helpers.get_comments_number
+        )
+        self.assertEquals(
+            helpers["get_comments_badge"], plugin.helpers.get_comments_badge
+        )
+        self.assertEquals(
+            helpers["get_open_datarequests_number"],
+            plugin.helpers.get_open_datarequests_number,
+        )
+        self.assertEquals(
+            helpers["get_open_datarequests_badge"], plugin.partial.return_value
+        )
 
         # Check that partial has been called
-        show_datarequests_expected = True if show_datarequests_badge == "True" else False
-        plugin.partial.assert_called_once_with(plugin.helpers.get_open_datarequests_badge, show_datarequests_expected)
+        show_datarequests_expected = (
+            True if show_datarequests_badge == "True" else False
+        )
+        plugin.partial.assert_called_once_with(
+            plugin.helpers.get_open_datarequests_badge, show_datarequests_expected
+        )

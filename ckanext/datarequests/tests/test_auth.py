@@ -25,11 +25,24 @@ import ckanext.datarequests.auth as auth
 import ckanext.datarequests.constants as constants
 
 # Needed for the test
-context = {"user": "example_usr", "auth_user_obj": MagicMock(), "model": MagicMock(), "session": MagicMock()}
+context = {
+    "user": "example_usr",
+    "auth_user_obj": MagicMock(),
+    "model": MagicMock(),
+    "session": MagicMock(),
+}
 
-request_data_dr = {"title": "title", "description": "description", "organization_id": "organization"}
+request_data_dr = {
+    "title": "title",
+    "description": "description",
+    "organization_id": "organization",
+}
 
-request_data_comment = {"id": "title", "datarequest_id": "example_uuid_v4", "comment": "This is an example comment"}
+request_data_comment = {
+    "id": "title",
+    "datarequest_id": "example_uuid_v4",
+    "comment": "This is an example comment",
+}
 
 request_follow = {
     "datarequest_id": "example_uuid_v4",
@@ -251,7 +264,13 @@ class AuthTest(unittest.TestCase):
         ]
     )
     def test_update_delete_datarequest(
-        self, function, show_function, user_id, request_data, action_called, expected_result
+        self,
+        function,
+        show_function,
+        user_id,
+        request_data,
+        action_called,
+        expected_result,
     ):
 
         user_obj = MagicMock()
@@ -272,6 +291,8 @@ class AuthTest(unittest.TestCase):
         if action_called:
             auth.tk.get_action.assert_called_once_with(show_function)
             xyz_show = auth.tk.get_action.return_value
-            xyz_show.assert_called_once_with({"ignore_auth": True}, {"id": request_data["id"]})
+            xyz_show.assert_called_once_with(
+                {"ignore_auth": True}, {"id": request_data["id"]}
+            )
         else:
             self.assertEquals(0, auth.tk.get_action.call_count)

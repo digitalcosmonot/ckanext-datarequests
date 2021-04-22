@@ -39,14 +39,20 @@ def dictice_ddbb_response(datarequest):
         "organization_id": datarequest.organization_id,
         "open_time": str(datarequest.open_time),
         "accepted_dataset_id": datarequest.accepted_dataset_id,
-        "close_time": str(datarequest.close_time) if datarequest.close_time else datarequest.close_time,
+        "close_time": str(datarequest.close_time)
+        if datarequest.close_time
+        else datarequest.close_time,
         "closed": datarequest.closed,
         "followers": DEFAULT_FOLLOWERS,
     }
 
 
 def _organization_show(context, data_dict):
-    return {"id": organization_default_id, "display_name": data_dict["id"].title(), "name": data_dict["id"]}
+    return {
+        "id": organization_default_id,
+        "display_name": data_dict["id"].title(),
+        "name": data_dict["id"],
+    }
 
 
 def _generate_basic_ddbb_response(number, organizations=None, closed=None):
@@ -72,7 +78,11 @@ def _generate_basic_ddbb_response(number, organizations=None, closed=None):
 
     response = list()
     for n in range(number):
-        response.append(_generate_basic_datarequest(organization_id=organizations[n], closed=closed[n]))
+        response.append(
+            _generate_basic_datarequest(
+                organization_id=organizations[n], closed=closed[n]
+            )
+        )
 
     return response
 
@@ -101,7 +111,10 @@ def _generate_basic_datarequest(
 
 
 def _generate_basic_comment(
-    id=COMMENT_ID, user_id="example_uuidv4_user", comment="Example Comment", datarequest_id="example_dr_id"
+    id=COMMENT_ID,
+    user_id="example_uuidv4_user",
+    comment="Example Comment",
+    datarequest_id="example_dr_id",
 ):
     comment = MagicMock()
     comment.id = id
@@ -134,7 +147,11 @@ def _initialize_basic_actions(actions, default_user, default_org, default_pkg):
 ######################### DATA FOR BASIC TESTS #######################
 ######################################################################
 
-create_request_data = {"title": "title", "description": "description", "organization_id": "organization"}
+create_request_data = {
+    "title": "title",
+    "description": "description",
+    "organization_id": "organization",
+}
 
 show_request_data = {"id": DATAREQUEST_ID}
 
@@ -149,9 +166,15 @@ delete_request_data = {"id": DATAREQUEST_ID}
 
 close_request_data = {"id": DATAREQUEST_ID}
 
-close_request_data_accepted_ds = {"id": DATAREQUEST_ID, "accepted_dataset_id": "uuid_v4_ds"}
+close_request_data_accepted_ds = {
+    "id": DATAREQUEST_ID,
+    "accepted_dataset_id": "uuid_v4_ds",
+}
 
-comment_request_data = {"datarequest_id": DATAREQUEST_ID, "comment": "This is a basic comment"}
+comment_request_data = {
+    "datarequest_id": DATAREQUEST_ID,
+    "comment": "This is a basic comment",
+}
 
 comment_show_request_data = {"datarequest_id": DATAREQUEST_ID, "id": COMMENT_ID}
 
@@ -159,7 +182,11 @@ comment_list_request_data = {
     "datarequest_id": DATAREQUEST_ID,
 }
 
-comment_update_request_data = {"id": COMMENT_ID, "datarequest_id": DATAREQUEST_ID, "comment": "This is a basic comment"}
+comment_update_request_data = {
+    "id": COMMENT_ID,
+    "datarequest_id": DATAREQUEST_ID,
+    "comment": "This is a basic comment",
+}
 
 comment_delete_request_data = {
     "id": COMMENT_ID,
@@ -186,7 +213,9 @@ ddbb_response_1 = [_generate_basic_datarequest(organization_id=None)]
 expected_result_1 = {
     "count": 1,
     "result": [dictice_ddbb_response(ddbb_response_1[0])],
-    "facets": {"state": {"items": [{"name": "open", "display_name": "Open", "count": 1}]}},
+    "facets": {
+        "state": {"items": [{"name": "open", "display_name": "Open", "count": 1}]}
+    },
 }
 
 
@@ -233,13 +262,21 @@ expected_result_2 = {
 
 # The one when the offset and the limit are enabled
 expected_result_3 = copy.deepcopy(expected_result_2)
-expected_result_3["result"] = expected_result_3["result"][default_offset : default_offset + default_limit]
+expected_result_3["result"] = expected_result_3["result"][
+    default_offset : default_offset + default_limit
+]
 
 # TEST CASES
 list_datarequests_test_case_1 = {
     "organization_show_func": _organization_show,
     "content": {},
-    "expected_ddbb_params": {"q": None, "organization_id": None, "user_id": None, "closed": None, "desc": False},
+    "expected_ddbb_params": {
+        "q": None,
+        "organization_id": None,
+        "user_id": None,
+        "closed": None,
+        "desc": False,
+    },
     "ddbb_response": ddbb_response_1,
     "expected_response": expected_result_1,
 }
@@ -261,7 +298,13 @@ list_datarequests_test_case_2 = {
 list_datarequests_test_case_3 = {
     "organization_show_func": _organization_show,
     "content": {"closed": True},
-    "expected_ddbb_params": {"q": None, "organization_id": None, "user_id": None, "closed": True, "desc": False},
+    "expected_ddbb_params": {
+        "q": None,
+        "organization_id": None,
+        "user_id": None,
+        "closed": True,
+        "desc": False,
+    },
     "ddbb_response": ddbb_response_1,
     "expected_response": expected_result_1,
 }
@@ -283,7 +326,13 @@ list_datarequests_test_case_4 = {
 list_datarequests_test_case_5 = {
     "organization_show_func": _organization_show,
     "content": {},
-    "expected_ddbb_params": {"q": None, "organization_id": None, "user_id": None, "closed": None, "desc": False},
+    "expected_ddbb_params": {
+        "q": None,
+        "organization_id": None,
+        "user_id": None,
+        "closed": None,
+        "desc": False,
+    },
     "ddbb_response": ddbb_response_2,
     "expected_response": expected_result_2,
 }
@@ -305,7 +354,13 @@ list_datarequests_test_case_6 = {
 list_datarequests_test_case_7 = {
     "organization_show_func": _organization_show,
     "content": {"closed": True},
-    "expected_ddbb_params": {"q": None, "organization_id": None, "user_id": None, "closed": True, "desc": False},
+    "expected_ddbb_params": {
+        "q": None,
+        "organization_id": None,
+        "user_id": None,
+        "closed": True,
+        "desc": False,
+    },
     "ddbb_response": ddbb_response_2,
     "expected_response": expected_result_2,
 }
@@ -327,14 +382,24 @@ list_datarequests_test_case_8 = {
 list_datarequests_test_case_9 = {
     "organization_show_func": _organization_show,
     "content": {"offset": default_offset, "limit": default_limit},
-    "expected_ddbb_params": {"q": None, "organization_id": None, "user_id": None, "closed": None, "desc": False},
+    "expected_ddbb_params": {
+        "q": None,
+        "organization_id": None,
+        "user_id": None,
+        "closed": None,
+        "desc": False,
+    },
     "ddbb_response": ddbb_response_2,
     "expected_response": expected_result_3,
 }
 
 list_datarequests_test_case_10 = {
     "organization_show_func": _organization_show,
-    "content": {"organization_id": "fiware", "offset": default_offset, "limit": default_limit},
+    "content": {
+        "organization_id": "fiware",
+        "offset": default_offset,
+        "limit": default_limit,
+    },
     "expected_ddbb_params": {
         "q": None,
         "organization_id": organization_default_id,
@@ -349,7 +414,13 @@ list_datarequests_test_case_10 = {
 list_datarequests_test_case_11 = {
     "organization_show_func": _organization_show,
     "content": {"closed": True, "offset": default_offset, "limit": default_limit},
-    "expected_ddbb_params": {"q": None, "organization_id": None, "user_id": None, "closed": True, "desc": False},
+    "expected_ddbb_params": {
+        "q": None,
+        "organization_id": None,
+        "user_id": None,
+        "closed": True,
+        "desc": False,
+    },
     "ddbb_response": ddbb_response_2,
     "expected_response": expected_result_3,
 }
@@ -377,7 +448,13 @@ list_datarequests_test_case_12 = {
 list_datarequests_test_case_13 = {
     "organization_show_func": _organization_show,
     "content": {"q": FREE_TEXT},
-    "expected_ddbb_params": {"q": FREE_TEXT, "organization_id": None, "user_id": None, "closed": None, "desc": False},
+    "expected_ddbb_params": {
+        "q": FREE_TEXT,
+        "organization_id": None,
+        "user_id": None,
+        "closed": None,
+        "desc": False,
+    },
     "ddbb_response": ddbb_response_1,
     "expected_response": expected_result_1,
 }
@@ -385,7 +462,13 @@ list_datarequests_test_case_13 = {
 list_datarequests_test_case_14 = {
     "organization_show_func": _organization_show,
     "content": {"sort": "desc"},
-    "expected_ddbb_params": {"q": None, "organization_id": None, "user_id": None, "closed": None, "desc": True},
+    "expected_ddbb_params": {
+        "q": None,
+        "organization_id": None,
+        "user_id": None,
+        "closed": None,
+        "desc": True,
+    },
     "ddbb_response": ddbb_response_1,
     "expected_response": expected_result_1,
 }
@@ -393,7 +476,13 @@ list_datarequests_test_case_14 = {
 list_datarequests_test_case_15 = {
     "organization_show_func": _organization_show,
     "content": {"sort": "asc"},
-    "expected_ddbb_params": {"q": None, "organization_id": None, "user_id": None, "closed": None, "desc": False},
+    "expected_ddbb_params": {
+        "q": None,
+        "organization_id": None,
+        "user_id": None,
+        "closed": None,
+        "desc": False,
+    },
     "ddbb_response": ddbb_response_1,
     "expected_response": expected_result_1,
 }
@@ -402,7 +491,13 @@ list_datarequests_test_case_15 = {
 list_datarequests_test_case_16 = {
     "organization_show_func": _organization_show,
     "content": {"closed": False},
-    "expected_ddbb_params": {"q": None, "organization_id": None, "user_id": None, "closed": False, "desc": False},
+    "expected_ddbb_params": {
+        "q": None,
+        "organization_id": None,
+        "user_id": None,
+        "closed": False,
+        "desc": False,
+    },
     "ddbb_response": ddbb_response_1,
     "expected_response": expected_result_1,
 }

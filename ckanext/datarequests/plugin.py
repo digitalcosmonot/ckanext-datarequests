@@ -68,10 +68,16 @@ class DataRequestsPlugin(p.SingletonPlugin):
         pass
 
     def __init__(self, name=None):
-        self.comments_enabled = get_config_bool_value("ckan.datarequests.comments", True)
-        self._show_datarequests_badge = get_config_bool_value("ckan.datarequests.show_datarequests_badge")
+        self.comments_enabled = get_config_bool_value(
+            "ckan.datarequests.comments", True
+        )
+        self._show_datarequests_badge = get_config_bool_value(
+            "ckan.datarequests.show_datarequests_badge"
+        )
         self.name = "datarequests"
-        self.is_description_required = get_config_bool_value("ckan.datarequests.description_required", False)
+        self.is_description_required = get_config_bool_value(
+            "ckan.datarequests.description_required", False
+        )
 
     def get_actions(self):
         """
@@ -89,11 +95,21 @@ class DataRequestsPlugin(p.SingletonPlugin):
         }
 
         if self.comments_enabled:
-            additional_actions[constants.COMMENT_DATAREQUEST] = actions.comment_datarequest
-            additional_actions[constants.LIST_DATAREQUEST_COMMENTS] = actions.list_datarequest_comments
-            additional_actions[constants.SHOW_DATAREQUEST_COMMENT] = actions.show_datarequest_comment
-            additional_actions[constants.UPDATE_DATAREQUEST_COMMENT] = actions.update_datarequest_comment
-            additional_actions[constants.DELETE_DATAREQUEST_COMMENT] = actions.delete_datarequest_comment
+            additional_actions[
+                constants.COMMENT_DATAREQUEST
+            ] = actions.comment_datarequest
+            additional_actions[
+                constants.LIST_DATAREQUEST_COMMENTS
+            ] = actions.list_datarequest_comments
+            additional_actions[
+                constants.SHOW_DATAREQUEST_COMMENT
+            ] = actions.show_datarequest_comment
+            additional_actions[
+                constants.UPDATE_DATAREQUEST_COMMENT
+            ] = actions.update_datarequest_comment
+            additional_actions[
+                constants.DELETE_DATAREQUEST_COMMENT
+            ] = actions.delete_datarequest_comment
 
         return additional_actions
 
@@ -114,10 +130,18 @@ class DataRequestsPlugin(p.SingletonPlugin):
 
         if self.comments_enabled:
             auth_functions[constants.COMMENT_DATAREQUEST] = auth.comment_datarequest
-            auth_functions[constants.LIST_DATAREQUEST_COMMENTS] = auth.list_datarequest_comments
-            auth_functions[constants.SHOW_DATAREQUEST_COMMENT] = auth.show_datarequest_comment
-            auth_functions[constants.UPDATE_DATAREQUEST_COMMENT] = auth.update_datarequest_comment
-            auth_functions[constants.DELETE_DATAREQUEST_COMMENT] = auth.delete_datarequest_comment
+            auth_functions[
+                constants.LIST_DATAREQUEST_COMMENTS
+            ] = auth.list_datarequest_comments
+            auth_functions[
+                constants.SHOW_DATAREQUEST_COMMENT
+            ] = auth.show_datarequest_comment
+            auth_functions[
+                constants.UPDATE_DATAREQUEST_COMMENT
+            ] = auth.update_datarequest_comment
+            auth_functions[
+                constants.DELETE_DATAREQUEST_COMMENT
+            ] = auth.delete_datarequest_comment
 
         return auth_functions
 
@@ -140,15 +164,45 @@ class DataRequestsPlugin(p.SingletonPlugin):
         IBlueprint
         """
         rules = [
-            ("/{}".format(constants.DATAREQUESTS_MAIN_PATH), "index", ui_controller.index),
-            ("/{}/new".format(constants.DATAREQUESTS_MAIN_PATH), "new", ui_controller.new),
-            ("/{}/<id>".format(constants.DATAREQUESTS_MAIN_PATH), "show", ui_controller.show),
-            ("/{}/edit/<id>".format(constants.DATAREQUESTS_MAIN_PATH), "update", ui_controller.update),
-            ("/{}/delete/<id>".format(constants.DATAREQUESTS_MAIN_PATH), "delete", ui_controller.delete),
-            ("/{}/close/<id>".format(constants.DATAREQUESTS_MAIN_PATH), "close", ui_controller.close),
-            ("/{}/follow/<datarequest_id>".format(constants.DATAREQUESTS_MAIN_PATH), "follow", ui_controller.follow),
             (
-                "/{}/unfollow/<datarequest_id>".format(constants.DATAREQUESTS_MAIN_PATH),
+                "/{}".format(constants.DATAREQUESTS_MAIN_PATH),
+                "index",
+                ui_controller.index,
+            ),
+            (
+                "/{}/new".format(constants.DATAREQUESTS_MAIN_PATH),
+                "new",
+                ui_controller.new,
+            ),
+            (
+                "/{}/<id>".format(constants.DATAREQUESTS_MAIN_PATH),
+                "show",
+                ui_controller.show,
+            ),
+            (
+                "/{}/edit/<id>".format(constants.DATAREQUESTS_MAIN_PATH),
+                "update",
+                ui_controller.update,
+            ),
+            (
+                "/{}/delete/<id>".format(constants.DATAREQUESTS_MAIN_PATH),
+                "delete",
+                ui_controller.delete,
+            ),
+            (
+                "/{}/close/<id>".format(constants.DATAREQUESTS_MAIN_PATH),
+                "close",
+                ui_controller.close,
+            ),
+            (
+                "/{}/follow/<datarequest_id>".format(constants.DATAREQUESTS_MAIN_PATH),
+                "follow",
+                ui_controller.follow,
+            ),
+            (
+                "/{}/unfollow/<datarequest_id>".format(
+                    constants.DATAREQUESTS_MAIN_PATH
+                ),
                 "unfollow",
                 ui_controller.unfollow,
             ),
@@ -157,15 +211,25 @@ class DataRequestsPlugin(p.SingletonPlugin):
                 "organization",
                 ui_controller.organization,
             ),
-            ("/user/{}/<id>".format(constants.DATAREQUESTS_MAIN_PATH), "user", ui_controller.user),
+            (
+                "/user/{}/<id>".format(constants.DATAREQUESTS_MAIN_PATH),
+                "user",
+                ui_controller.user,
+            ),
         ]
 
         if self.comments_enabled:
             rules.extend(
                 [
-                    ("/{}/comment/<id>".format(constants.DATAREQUESTS_MAIN_PATH), "comment", ui_controller.comment),
                     (
-                        "/{}/comment/<datarequest_id>/delete/<comment_id>".format(constants.DATAREQUESTS_MAIN_PATH),
+                        "/{}/comment/<id>".format(constants.DATAREQUESTS_MAIN_PATH),
+                        "comment",
+                        ui_controller.comment,
+                    ),
+                    (
+                        "/{}/comment/<datarequest_id>/delete/<comment_id>".format(
+                            constants.DATAREQUESTS_MAIN_PATH
+                        ),
                         "delete_comment",
                         ui_controller.delete_comment,
                     ),
@@ -186,7 +250,9 @@ class DataRequestsPlugin(p.SingletonPlugin):
             "get_comments_number": helpers.get_comments_number,
             "get_comments_badge": helpers.get_comments_badge,
             "get_open_datarequests_number": helpers.get_open_datarequests_number,
-            "get_open_datarequests_badge": partial(helpers.get_open_datarequests_badge, self._show_datarequests_badge),
+            "get_open_datarequests_badge": partial(
+                helpers.get_open_datarequests_badge, self._show_datarequests_badge
+            ),
             "get_plus_icon": get_plus_icon,
             "is_following_datarequest": helpers.is_following_datarequest,
             "is_description_required": self.is_description_required,
@@ -215,7 +281,11 @@ class DataRequestsPlugin(p.SingletonPlugin):
         plugin
         """
         directory = self.i18n_directory()
-        return [d for d in os.listdir(directory) if os.path.isdir(os.path.join(directory, d))]
+        return [
+            d
+            for d in os.listdir(directory)
+            if os.path.isdir(os.path.join(directory, d))
+        ]
 
     def i18n_domain(self):
         """Change the gettext domain handled by this plugin
