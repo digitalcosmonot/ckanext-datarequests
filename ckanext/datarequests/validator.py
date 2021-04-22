@@ -27,7 +27,9 @@ def validate_datarequest(context, request_data):
     # Check name
     if len(request_data["title"]) > constants.NAME_MAX_LENGTH:
         errors[tk._("Title")] = [
-            tk._("Title must be a maximum of {max_len} characters long").format(max_len=constants.NAME_MAX_LENGTH)
+            tk._("Title must be a maximum of {max_len} characters long").format(
+                max_len=constants.NAME_MAX_LENGTH
+            )
         ]
 
     if not request_data["title"]:
@@ -55,7 +57,9 @@ def validate_datarequest(context, request_data):
 
     if len(request_data["description"]) > constants.DESCRIPTION_MAX_LENGTH:
         errors[tk._("Description")] = [
-            tk._("Description must be a maximum of {max_len} characters long").format(max_len=constants.DESCRIPTION_MAX_LENGTH)
+            tk._("Description must be a maximum of {max_len} characters long").format(
+                max_len=constants.DESCRIPTION_MAX_LENGTH
+            )
         ]
 
     # Check organization
@@ -105,7 +109,9 @@ def validate_comment(context, request_data):
         raise tk.ValidationError(
             {
                 tk._("Comment"): [
-                    tk._("Comments must be a maximum of {max_len} characters long").format(max_len=constants.COMMENT_MAX_LENGTH)
+                    tk._(
+                        "Comments must be a maximum of {max_len} characters long"
+                    ).format(max_len=constants.COMMENT_MAX_LENGTH)
                 ]
             }
         )

@@ -641,9 +641,7 @@ class TestSelenium(unittest.TestCase):
         Select(self.driver.find_element_by_id("field-order-by")).select_by_visible_text(
             "Oldest"
         )
-        self.assertTrue(
-            self.is_element_present(By.LINK_TEXT, f"{base_name} 0")
-        )
+        self.assertTrue(self.is_element_present(By.LINK_TEXT, f"{base_name} 0"))
         self.check_datarequests_counter(n_datarequests)
 
         # There must be two pages (10 + 1). One page contains 10 items as a
@@ -654,9 +652,7 @@ class TestSelenium(unittest.TestCase):
         # The latest data request is in the second page
         self.driver.find_element_by_link_text("2").click()
         self.assertTrue(
-            self.is_element_present(
-                By.LINK_TEXT, f"{base_name} {(n_datarequests - 1)}"
-            )
+            self.is_element_present(By.LINK_TEXT, f"{base_name} {(n_datarequests - 1)}")
         )
         self.check_n_datarequests(1)
 

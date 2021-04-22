@@ -98,8 +98,7 @@ class UIControllerTest(unittest.TestCase):
             check_access_func, self.expected_context, {"id": datarequest_id}
         )
         controller.tk.abort.assert_called_once_with(
-            403,
-            f"You are not authorized to {action} the Data Request {datarequest_id}"
+            403, f"You are not authorized to {action} the Data Request {datarequest_id}"
         )
         self.assertEquals(0, controller.tk.render.call_count)
         self.assertIsNone(result)
@@ -788,7 +787,9 @@ class UIControllerTest(unittest.TestCase):
             self.expected_context, expected_data_dict
         )
         controller.helpers.flash_notice.assert_called_once_with(
-            controller.tk._("Data Request {title} has been deleted").format(title=datarequest.get("title", ""))
+            controller.tk._("Data Request {title} has been deleted").format(
+                title=datarequest.get("title", "")
+            )
         )
 
         # Redirection

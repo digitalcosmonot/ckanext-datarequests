@@ -168,9 +168,7 @@ def _send_mail(user_ids, action_type, datarequest):
             subject = base.render_jinja2(
                 f"emails/subjects/{action_type}.txt", extra_vars
             )
-            body = base.render_jinja2(
-                f"emails/bodies/{action_type}.txt", extra_vars
-            )
+            body = base.render_jinja2(f"emails/bodies/{action_type}.txt", extra_vars)
 
             mailer.mail_user(user_data, subject, body)
 
@@ -269,7 +267,9 @@ def show_datarequest(context, data_dict):
     result = db.DataRequest.get(id=datarequest_id)
     if not result:
         raise tk.ObjectNotFound(
-            tk._("Data Request {datarequest_id} not found in the data base").format(datarequest_id=datarequest_id)
+            tk._("Data Request {datarequest_id} not found in the data base").format(
+                datarequest_id=datarequest_id
+            )
         )
 
     data_req = result[0]
@@ -324,7 +324,9 @@ def update_datarequest(context, data_dict):
     result = db.DataRequest.get(id=datarequest_id)
     if not result:
         raise tk.ObjectNotFound(
-            tk._("Data Request {datarequest_id} not found in the data base").format(datarequest_id=datarequest_id)
+            tk._("Data Request {datarequest_id} not found in the data base").format(
+                datarequest_id=datarequest_id
+            )
         )
 
     data_req = result[0]
@@ -522,7 +524,9 @@ def delete_datarequest(context, data_dict):
     result = db.DataRequest.get(id=datarequest_id)
     if not result:
         raise tk.ObjectNotFound(
-            tk._("Data Request {datarequest_id} not found in the data base").format(datarequest_id=datarequest_id)
+            tk._("Data Request {datarequest_id} not found in the data base").format(
+                datarequest_id=datarequest_id
+            )
         )
 
     data_req = result[0]
@@ -570,7 +574,9 @@ def close_datarequest(context, data_dict):
     result = db.DataRequest.get(id=datarequest_id)
     if not result:
         raise tk.ObjectNotFound(
-            tk._("Data Request {datarequest_id} not found in the data base").format(datarequest_id=datarequest_id)
+            tk._("Data Request {datarequest_id} not found in the data base").format(
+                datarequest_id=datarequest_id
+            )
         )
 
     # Validate data
@@ -680,7 +686,9 @@ def show_datarequest_comment(context, data_dict):
     result = db.Comment.get(id=comment_id)
     if not result:
         raise tk.ObjectNotFound(
-            tk._("Comment {comment_id} not found in the data base").format(comment_id=comment_id)
+            tk._("Comment {comment_id} not found in the data base").format(
+                comment_id=comment_id
+            )
         )
 
     return _dictize_comment(result[0])
@@ -777,7 +785,9 @@ def update_datarequest_comment(context, data_dict):
     result = db.Comment.get(id=comment_id)
     if not result:
         raise tk.ObjectNotFound(
-            tk._("Comment {comment_id} not found in the data base").format(comment_id=comment_id)
+            tk._("Comment {comment_id} not found in the data base").format(
+                comment_id=comment_id
+            )
         )
 
     comment = result[0]
@@ -825,7 +835,9 @@ def delete_datarequest_comment(context, data_dict):
     result = db.Comment.get(id=comment_id)
     if not result:
         raise tk.ObjectNotFound(
-            tk._("Comment {comment_id} not found in the data base").format(comment_id=comment_id)
+            tk._("Comment {comment_id} not found in the data base").format(
+                comment_id=comment_id
+            )
         )
 
     comment = result[0]
@@ -869,7 +881,9 @@ def follow_datarequest(context, data_dict):
     result = db.DataRequest.get(id=datarequest_id)
     if not result:
         raise tk.ObjectNotFound(
-            tk._("Data Request {datarequest_id} not found in the data base").format(datarequest_id=datarequest_id)
+            tk._("Data Request {datarequest_id} not found in the data base").format(
+                datarequest_id=datarequest_id
+            )
         )
 
     # Is already following?

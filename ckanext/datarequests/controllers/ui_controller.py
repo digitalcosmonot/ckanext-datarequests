@@ -261,7 +261,8 @@ def show(id):
     except tk.NotAuthorized as e:
         log.warn(e)
         tk.abort(
-            403, tk._("You are not authorized to view the Data Request {id}").format(id=id)
+            403,
+            tk._("You are not authorized to view the Data Request {id}").format(id=id),
         )
 
 
@@ -286,7 +287,10 @@ def update(id):
     except tk.NotAuthorized as e:
         log.warn(e)
         tk.abort(
-            403, tk._("You are not authorized to update the Data Request {id}").format(id=id)
+            403,
+            tk._("You are not authorized to update the Data Request {id}").format(
+                id=id
+            ),
         )
 
 
@@ -302,7 +306,9 @@ def delete(id):
         tk.check_access(constants.DELETE_DATAREQUEST, context, data_dict)
         datarequest = tk.get_action(constants.DELETE_DATAREQUEST)(context, data_dict)
         helpers.flash_notice(
-            tk._("Data Request {title} has been deleted").format(title=datarequest.get("title", ""))
+            tk._("Data Request {title} has been deleted").format(
+                title=datarequest.get("title", "")
+            )
         )
         tk.redirect_to(
             helpers.url_for(
@@ -316,7 +322,10 @@ def delete(id):
     except tk.NotAuthorized as e:
         log.warn(e)
         tk.abort(
-            403, tk._("You are not authorized to delete the Data Request {id}").format(id=id)
+            403,
+            tk._("You are not authorized to delete the Data Request {id}").format(
+                id=id
+            ),
         )
 
 
@@ -392,7 +401,8 @@ def close(id):
     except tk.NotAuthorized as e:
         log.warn(e)
         tk.abort(
-            403, tk._("You are not authorized to close the Data Request {id}").format(id=id)
+            403,
+            tk._("You are not authorized to close the Data Request {id}").format(id=id),
         )
 
 
@@ -442,7 +452,12 @@ def comment(id):
 
             except tk.NotAuthorized as e:
                 log.warn(e)
-                tk.abort(403, tk._("You are not authorized to {action_text}").format(action_text=action_text))
+                tk.abort(
+                    403,
+                    tk._("You are not authorized to {action_text}").format(
+                        action_text=action_text
+                    ),
+                )
             except tk.ValidationError as e:
                 log.warn(e)
                 g.errors = e.error_dict
@@ -474,7 +489,9 @@ def comment(id):
         log.warn(e)
         tk.abort(
             403,
-            tk._("You are not authorized to list the comments of the Data Request {id}").format(id=id)
+            tk._(
+                "You are not authorized to list the comments of the Data Request {id}"
+            ).format(id=id),
         )
 
 
@@ -498,7 +515,9 @@ def delete_comment(datarequest_id, comment_id):
         )
     except tk.ObjectNotFound as e:
         log.warn(e)
-        tk.abort(404, tk._("Comment {comment_id} not found").format(comment_id=comment_id))
+        tk.abort(
+            404, tk._("Comment {comment_id} not found").format(comment_id=comment_id)
+        )
     except tk.NotAuthorized as e:
         log.warn(e)
         tk.abort(403, tk._("You are not authorized to delete this comment"))
