@@ -44,7 +44,9 @@ def get_open_datarequests_number():
 def is_following_datarequest(datarequest_id):
     # DB should be intialized
     db.init_db(model)
-    records = db.DataRequestFollower.get(datarequest_id=datarequest_id, user_id=c.userobj.id)
+    records = db.DataRequestFollower.get(
+        datarequest_id=datarequest_id, user_id=c.userobj.id
+    )
     return bool(len(records))
 
 
