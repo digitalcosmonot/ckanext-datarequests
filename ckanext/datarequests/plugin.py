@@ -21,7 +21,6 @@ from functools import partial
 
 from ckan import plugins as p
 from ckan.common import config
-from ckan.lib import helpers as h
 from ckan.plugins import toolkit as tk
 from flask import Blueprint
 
@@ -33,24 +32,15 @@ datarequests_bp = Blueprint("datarequests", __name__)
 
 def get_config_bool_value(config_name, default_value=False):
     value = config.get(config_name, default_value)
-    value = value if type(value) == bool else value != "False"
+
+    if not isinstance(value, bool):
+        value = (value != "False")
+
     return value
 
 
-def is_fontawesome_4():
-    if hasattr(h, "ckan_version"):
-        ckan_version = float(h.ckan_version()[0:3])
-        return ckan_version >= 2.7
-    else:
-        return False
-
-
-def get_plus_icon():
-    return "plus-square" if is_fontawesome_4() else "plus-sign-alt"
-
-
 def get_question_icon():
-    return "question-circle" if is_fontawesome_4() else "question-sign"
+    return "question-circle"
 
 
 class DataRequestsPlugin(p.SingletonPlugin):
@@ -60,12 +50,7 @@ class DataRequestsPlugin(p.SingletonPlugin):
     p.implements(p.IConfigurer)
     p.implements(p.IBlueprint)
     p.implements(p.ITemplateHelpers)
-
-    # ITranslation only available in 2.5+
-    try:
-        p.implements(p.ITranslation)
-    except AttributeError:
-        pass
+    p.implements(p.ITranslation)
 
     def __init__(self, name=None):
         self.comments_enabled = get_config_bool_value(
@@ -249,7 +234,6 @@ class DataRequestsPlugin(p.SingletonPlugin):
             "get_open_datarequests_badge": partial(
                 helpers.get_open_datarequests_badge, self._show_datarequests_badge
             ),
-            "get_plus_icon": get_plus_icon,
             "is_following_datarequest": helpers.is_following_datarequest,
             "is_description_required": self.is_description_required,
         }

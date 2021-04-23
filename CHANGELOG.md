@@ -8,7 +8,7 @@
 * New: Migrated from `fanstatic` to `assets`
 * New: Applied `isort` and `black` code formatting
 
-* NOTE: Backwards incompatible with Python 2 and CKAN 2.8
+* NOTE: Backwards incompatible with Python<3.6 and CKAN<2.10
 
 ## v1.2.0 (UNRELEASED)
 

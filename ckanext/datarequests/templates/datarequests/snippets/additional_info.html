@@ -24,7 +24,7 @@
             <th scope="row" class="dataset-label">{{ _('Accepted Dataset') }}</th>
             <td class="dataset-details">
             {% if datarequest.accepted_dataset %}
-              {% link_for datarequest.accepted_dataset['title'], controller='package', action='read', id=datarequest.accepted_dataset.get('id') %}
+              {% link_for datarequest.accepted_dataset['title'], controller='dataset', action='read', id=datarequest.accepted_dataset.get('id') %}
             {% else %}
               {{ _('None') }}
             {% endif %}

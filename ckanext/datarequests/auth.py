@@ -32,8 +32,8 @@ def show_datarequest(context, data_dict):
 def auth_if_creator(context, data_dict, show_function):
     # Sometimes data_dict only contains the 'id'
     if "user_id" not in data_dict:
-        function = tk.get_action(show_function)
-        data_dict = function({"ignore_auth": True}, {"id": data_dict.get("id")})
+        func = tk.get_action(show_function)
+        data_dict = func({"ignore_auth": True}, {"id": data_dict.get("id")})
 
     return {"success": data_dict["user_id"] == context.get("auth_user_obj").id}
 
