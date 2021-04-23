@@ -1,3 +1,8 @@
+datarequests_css:
+  output: datarequests/%(version)s_datarequests.css
+  contents:
+    - datarequests.css
+
 edit_comment_js:
   output: datarequests/%(version)s_edit_comment.js
   contents:

@@ -1,5 +1,10 @@
 {% extends "page.html" %}
 
+{% block styles %}
+  {{ super() }}
+  {% asset 'datarequests/datarequests_css' %}
+{% endblock %}
+
 {% block subtitle %}{{ _('Data Requests') }}{% endblock %}
 
 {% block breadcrumb_content %}

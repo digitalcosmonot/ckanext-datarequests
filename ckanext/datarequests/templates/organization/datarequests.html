@@ -1,5 +1,10 @@
 {% extends "organization/read_base.html" %}
 
+{% block styles %}
+  {{ super() }}
+  {% asset 'datarequests/datarequests_css' %}
+{% endblock %}
+
 {% block page_primary_action %}
   {% if h.check_access('create_datarequest') %}
     <div class="page_primary_action">
