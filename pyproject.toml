@@ -1,0 +1,3 @@
+[tool.black]
+# same as ckan
+line-length = 79

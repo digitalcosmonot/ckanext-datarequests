@@ -28,9 +28,12 @@ setup(
     In this way we can set up a Data Market, not only with data supplies but also with data demands.
     """,
     classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: GNU Affero General Public License v3",
         "Operating System :: OS Independent",
+        "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
     ],  # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
     keywords="",
     author="CoNWeT Lab.",
@@ -44,6 +47,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     setup_requires=["nose>=1.3.0"],
+    python_requires=">=3.6",
     install_requires=[
         # -*- Extra requirements: -*-
     ],

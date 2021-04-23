@@ -73,58 +73,6 @@ class DataRequestPluginTest(unittest.TestCase):
         self.partial_patch.stop()
         self.h_patch.stop()
 
-    def test_is_fontawesome_4_false_ckan_version_does_not_exist(self):
-        delattr(self.h_mock, "ckan_version")
-        self.assertFalse(plugin.is_fontawesome_4())
-
-    def test_is_fontawesome_4_false_old_ckan_version(self):
-        self.h_mock.ckan_version.return_value = "2.6.0"
-        self.assertFalse(plugin.is_fontawesome_4())
-
-    def test_is_fontawesome_4_true_new_ckan_version(self):
-        self.h_mock.ckan_version.return_value = "2.7.0"
-        self.assertTrue(plugin.is_fontawesome_4())
-
-    def test_get_plus_icon_new(self):
-
-        is_fontawesome_4_patch = patch(
-            "ckanext.datarequests.plugin.is_fontawesome_4", return_value=True
-        )
-        is_fontawesome_4_patch.start()
-        self.addCleanup(is_fontawesome_4_patch.stop)
-
-        self.assertEquals("plus-square", plugin.get_plus_icon())
-
-    def test_get_plus_icon_old(self):
-
-        is_fontawesome_4_patch = patch(
-            "ckanext.datarequests.plugin.is_fontawesome_4", return_value=False
-        )
-        is_fontawesome_4_patch.start()
-        self.addCleanup(is_fontawesome_4_patch.stop)
-
-        self.assertEquals("plus-sign-alt", plugin.get_plus_icon())
-
-    def test_get_question_icon_new(self):
-
-        is_fontawesome_4_patch = patch(
-            "ckanext.datarequests.plugin.is_fontawesome_4", return_value=True
-        )
-        is_fontawesome_4_patch.start()
-        self.addCleanup(is_fontawesome_4_patch.stop)
-
-        self.assertEquals("question-circle", plugin.get_question_icon())
-
-    def test_get_question_icon_old(self):
-
-        is_fontawesome_4_patch = patch(
-            "ckanext.datarequests.plugin.is_fontawesome_4", return_value=False
-        )
-        is_fontawesome_4_patch.start()
-        self.addCleanup(is_fontawesome_4_patch.stop)
-
-        self.assertEquals("question-sign", plugin.get_question_icon())
-
     @parameterized.expand([("True",), ("False",)])
     def test_get_actions(self, comments_enabled):
 
@@ -261,12 +209,12 @@ class DataRequestPluginTest(unittest.TestCase):
         plugin.config.get.return_value = comments_enabled
         self.plg_instance = plugin.DataRequestsPlugin()
 
-        mock_icon = "icon"
-        get_question_icon_patch = patch(
-            "ckanext.datarequests.plugin.get_question_icon", return_value=mock_icon
-        )
-        get_question_icon_patch.start()
-        self.addCleanup(get_question_icon_patch.stop)
+        mock_icon = "question-circle"
+        # get_question_icon_patch = patch(
+        #     "ckanext.datarequests.plugin.get_question_icon", return_value=mock_icon
+        # )
+        # get_question_icon_patch.start()
+        # self.addCleanup(get_question_icon_patch.stop)
 
         # Test
         mapa = MagicMock()
