@@ -24,6 +24,7 @@ from ckan import model
 from ckan.lib import helpers
 from ckan.plugins import toolkit as tk
 from ckan.plugins.toolkit import g, request
+from ckan.views.group import _setup_template_variables
 
 from .. import constants
 
@@ -158,7 +159,11 @@ def _show_index(
         # Organization facet cannot be shown when the user is viewing an org
         if include_organization_facet is True:
             g.facet_titles["organization"] = tk._("Organizations")
-
+        vars_dict = {
+            "user_dict": g.user_dict if hasattr(g, "user_dict") else None,
+            "group_type": "organization",
+        }
+        extra_vars = _setup_template_variables(context, vars_dict)
         return tk.render(
             file_to_render,
             extra_vars={
