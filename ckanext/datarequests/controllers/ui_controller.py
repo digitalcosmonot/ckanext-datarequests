@@ -159,14 +159,14 @@ def _show_index(
         # Organization facet cannot be shown when the user is viewing an org
         if include_organization_facet is True:
             g.facet_titles["organization"] = tk._("Organizations")
-        vars_dict = {
-            "user_dict": g.user_dict if hasattr(g, "user_dict") else None,
-            "group_type": "organization",
-        }
-        extra_vars = _setup_template_variables(context, vars_dict)
+
         return tk.render(
             file_to_render,
-            extra_vars= extra_vars,
+            extra_vars={
+                "user_dict": g.user_dict if hasattr(g, "user_dict") else None,
+                "group_type": "organization",
+                "group_dict": g.group_dict if hasattr(g, "group_dict") else None
+            },
         )
     except ValueError as e:
         # This exception should only occur if the page value is not valid
