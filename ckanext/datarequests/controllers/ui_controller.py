@@ -166,10 +166,7 @@ def _show_index(
         extra_vars = _setup_template_variables(context, vars_dict)
         return tk.render(
             file_to_render,
-            extra_vars={
-                "user_dict": g.user_dict if hasattr(g, "user_dict") else None,
-                "group_type": "organization",
-            },
+            extra_vars= extra_vars,
         )
     except ValueError as e:
         # This exception should only occur if the page value is not valid
