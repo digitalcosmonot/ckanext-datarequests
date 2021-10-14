@@ -24,6 +24,7 @@ from ckan import model
 from ckan.lib import helpers
 from ckan.plugins import toolkit as tk
 from ckan.plugins.toolkit import g, request
+from ckan.views.group import _setup_template_variables
 
 from .. import constants
 
@@ -164,6 +165,7 @@ def _show_index(
             extra_vars={
                 "user_dict": g.user_dict if hasattr(g, "user_dict") else None,
                 "group_type": "organization",
+                "group_dict": g.group_dict if hasattr(g, "group_dict") else None
             },
         )
     except ValueError as e:
