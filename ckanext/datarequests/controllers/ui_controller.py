@@ -21,10 +21,11 @@ import re
 from urllib.parse import urlencode
 
 from ckan import model
-from ckan.lib import helpers
+from ckan.lib import helpers 
 from ckan.plugins import toolkit as tk
 from ckan.plugins.toolkit import g, request
 from ckan.views.group import _setup_template_variables
+import ckan.lib.helpers as h
 
 from .. import constants
 
@@ -189,36 +190,28 @@ def index():
 
 def _process_post(action, context):
     # If the user has submitted the form, the data request must be created
-    if request.method == "POST":
-        data_dict = {}
-        data_dict["title"] = request.form.get("title", "")
-        data_dict["description"] = request.form.get("description", "")
-        data_dict["organization_id"] = request.form.get("organization_id", "")
+    data_dict = {}
+    data_dict["title"] = request.form.get("title", "")
+    data_dict["description"] = request.form.get("description", "")
+    data_dict["organization_id"] = request.form.get("organization_id", "")
 
-        if action == constants.UPDATE_DATAREQUEST:
-            data_dict["id"] = request.form.get("id", "")
+    if action == constants.UPDATE_DATAREQUEST:
+        data_dict["id"] = request.form.get("id", "")
 
-        try:
-            result = tk.get_action(action)(context, data_dict)
-            tk.redirect_to(
-                helpers.url_for(
-                    controller="datarequests",
-                    action="show",
-                    id=result["id"],
-                )
-            )
-
-        except tk.ValidationError as e:
-            log.warn(e)
-            # Fill the fields that will display some information in the page
-            g.datarequest = {
-                "id": data_dict.get("id", ""),
-                "title": data_dict.get("title", ""),
-                "description": data_dict.get("description", ""),
-                "organization_id": data_dict.get("organization_id", ""),
-            }
-            g.errors = e.error_dict
-            g.errors_summary = _get_errors_summary(g.errors)
+    try:
+        result = tk.get_action(action)(context, data_dict)
+        return result['id']
+    except tk.ValidationError as e:
+        log.warn(e)
+        # Fill the fields that will display some information in the page
+        g.datarequest = {
+            "id": data_dict.get("id", ""),
+            "title": data_dict.get("title", ""),
+            "description": data_dict.get("description", ""),
+            "organization_id": data_dict.get("organization_id", ""),
+        }
+        g.errors = e.error_dict
+        g.errors_summary = _get_errors_summary(g.errors)
 
 
 def new():
@@ -232,7 +225,9 @@ def new():
     # Check access
     try:
         tk.check_access(constants.CREATE_DATAREQUEST, context, None)
-        _process_post(constants.CREATE_DATAREQUEST, context)
+        if request.method == "POST":
+            id = _process_post(constants.CREATE_DATAREQUEST, context)
+            return h.redirect_to(h.url_for('datarequests_show', id=id))  
 
         # The form is always rendered
         return tk.render("datarequests/new.html")
@@ -281,7 +276,9 @@ def update(id):
         tk.check_access(constants.UPDATE_DATAREQUEST, context, data_dict)
         g.datarequest = tk.get_action(constants.SHOW_DATAREQUEST)(context, data_dict)
         g.original_title = g.datarequest.get("title")
-        _process_post(constants.UPDATE_DATAREQUEST, context)
+        if request.method == "POST":
+            id = _process_post(constants.CREATE_DATAREQUEST, context)
+            return h.redirect_to(h.url_for('datarequests_show', id=id))
         return tk.render("datarequests/edit.html")
     except tk.ObjectNotFound as e:
         log.warn(e)
@@ -303,7 +300,6 @@ update.methods = ["GET", "POST"]
 def delete(id):
     data_dict = {"id": id}
     context = _get_context()
-
     try:
         tk.check_access(constants.DELETE_DATAREQUEST, context, data_dict)
         datarequest = tk.get_action(constants.DELETE_DATAREQUEST)(context, data_dict)
@@ -312,7 +308,7 @@ def delete(id):
                 title=datarequest.get("title", "")
             )
         )
-        tk.redirect_to(
+        return tk.redirect_to(
             helpers.url_for(
                 controller="datarequests",
                 action="index",
@@ -323,7 +319,7 @@ def delete(id):
         tk.abort(404, tk._("Data Request {id} not found").format(id=id))
     except tk.NotAuthorized as e:
         log.warn(e)
-        tk.abort(
+        return tk.abort(
             403,
             tk._("You are not authorized to delete the Data Request {id}").format(
                 id=id
@@ -383,7 +379,7 @@ def close(id):
             data_dict["id"] = id
 
             tk.get_action(constants.CLOSE_DATAREQUEST)(context, data_dict)
-            tk.redirect_to(
+            return tk.redirect_to(
                 helpers.url_for(
                     controller="datarequests",
                     action="show",
@@ -402,7 +398,7 @@ def close(id):
         tk.abort(404, tk._("Data Request {id} not found").format(id=id))
     except tk.NotAuthorized as e:
         log.warn(e)
-        tk.abort(
+        return tk.abort(
             403,
             tk._("You are not authorized to close the Data Request {id}").format(id=id),
         )
