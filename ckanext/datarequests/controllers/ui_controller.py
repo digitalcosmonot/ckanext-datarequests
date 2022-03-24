@@ -277,7 +277,7 @@ def update(id):
         g.datarequest = tk.get_action(constants.SHOW_DATAREQUEST)(context, data_dict)
         g.original_title = g.datarequest.get("title")
         if request.method == "POST":
-            id = _process_post(constants.CREATE_DATAREQUEST, context)
+            id = _process_post(constants.UPDATE_DATAREQUEST, context)
             return h.redirect_to(h.url_for('datarequests_show', id=id))
         return tk.render("datarequests/edit.html")
     except tk.ObjectNotFound as e:
