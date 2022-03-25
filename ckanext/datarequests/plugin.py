@@ -111,6 +111,7 @@ class DataRequestsPlugin(p.SingletonPlugin):
             constants.CLOSE_DATAREQUEST: auth.close_datarequest,
             constants.FOLLOW_DATAREQUEST: auth.follow_datarequest,
             constants.UNFOLLOW_DATAREQUEST: auth.unfollow_datarequest,
+            constants.DATAREQUEST_INDEX: auth.datarequest_index,
         }
 
         if self.comments_enabled:

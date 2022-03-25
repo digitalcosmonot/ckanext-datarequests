@@ -57,35 +57,10 @@ def init_db(model):
                 )
 
             @classmethod
-            def get_ordered_by_date(
-                cls, organization_id=None, user_id=None, closed=None, q=None, desc=False
-            ):
-                """Personalized query"""
+            def get_ordered_by_date(cls, **kw):
+                '''Personalized query'''
                 query = model.Session.query(cls).autoflush(False)
-
-                params = {}
-
-                if organization_id is not None:
-                    params["organization_id"] = organization_id
-
-                if user_id is not None:
-                    params["user_id"] = user_id
-
-                if closed is not None:
-                    params["closed"] = closed
-
-                if q is not None:
-                    search_expr = f"%{q}%"
-                    query = query.filter(
-                        or_(
-                            cls.title.ilike(search_expr),
-                            cls.description.ilike(search_expr),
-                        )
-                    )
-
-                order_by_filter = cls.open_time.desc() if desc else cls.open_time.asc()
-
-                return query.filter_by(**params).order_by(order_by_filter).all()
+                return query.filter_by(**kw).order_by(cls.open_time.desc()).all()
 
             @classmethod
             def get_open_datarequests_number(cls):
@@ -99,35 +74,21 @@ def init_db(model):
         DataRequest = _DataRequest
 
         # FIXME: References to the other tables...
-        datarequests_table = sa.Table(
-            "datarequests",
-            model.meta.metadata,
-            sa.Column("user_id", sa.types.UnicodeText, primary_key=False, default=""),
-            sa.Column("id", sa.types.UnicodeText, primary_key=True, default=uuid4),
-            sa.Column(
-                "title",
-                sa.types.Unicode(constants.NAME_MAX_LENGTH),
-                primary_key=True,
-                default="",
-            ),
-            sa.Column(
-                "description",
-                sa.types.Unicode(constants.DESCRIPTION_MAX_LENGTH),
-                primary_key=False,
-                default="",
-            ),
-            sa.Column(
-                "organization_id", sa.types.UnicodeText, primary_key=False, default=None
-            ),
-            sa.Column("open_time", sa.types.DateTime, primary_key=False, default=None),
-            sa.Column(
-                "accepted_dataset_id",
-                sa.types.UnicodeText,
-                primary_key=False,
-                default=None,
-            ),
-            sa.Column("close_time", sa.types.DateTime, primary_key=False, default=None),
-            sa.Column("closed", sa.types.Boolean, primary_key=False, default=False),
+        datarequests_table = sa.Table('datarequests', model.meta.metadata,
+            sa.Column('user_id', sa.types.UnicodeText, primary_key=False, default=u''),
+            sa.Column('id', sa.types.UnicodeText, primary_key=True, default=uuid4),
+            sa.Column('title', sa.types.Unicode(constants.NAME_MAX_LENGTH), primary_key=True, default=u''),
+            sa.Column('description', sa.types.Unicode(constants.DESCRIPTION_MAX_LENGTH), primary_key=False, default=u''),
+            sa.Column('organization_id', sa.types.UnicodeText, primary_key=False, default=None),
+            sa.Column('open_time', sa.types.DateTime, primary_key=False, default=None),
+            sa.Column('accepted_dataset_id', sa.types.UnicodeText, primary_key=False, default=None),
+            sa.Column('close_time', sa.types.DateTime, primary_key=False, default=None),
+            sa.Column('closed', sa.types.Boolean, primary_key=False, default=False),
+            sa.Column('extras', model.types.JsonDictType),
+            sa.Column('visibility',
+                      sa.types.Integer,
+                      default=constants.DataRequestState.hidden.value),
+            sa.Column('status', sa.types.Unicode(128), primary_key=False, default=u'Open')
         )
 
         # Create the table only if it does not exist

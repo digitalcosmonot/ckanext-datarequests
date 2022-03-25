@@ -26,6 +26,8 @@ from ckan.plugins import toolkit as tk
 from ckan.plugins.toolkit import g, request
 from ckan.views.group import _setup_template_variables
 import ckan.lib.helpers as h
+import ckan.authz as authz
+import collections
 
 from .. import constants
 
@@ -114,49 +116,50 @@ def _show_index(
         offset = (page - 1) * constants.DATAREQUESTS_PER_PAGE
         data_dict = {"offset": offset, "limit": limit}
 
-        state = request.args.get("state", None)
-        if state:
-            data_dict["closed"] = True if state == "closed" else False
-
-        q = request.args.get("q", "")
-        if q:
-            data_dict["q"] = q
+        # state = request.args.get("state", None)
+        # if state:
+        #     data_dict["closed"] = True if state == "closed" else False
+        is_sysadmin = authz.is_sysadmin(g.user)
+        if is_sysadmin:
+            visibility = request.args.get('visibility', None)
+            if visibility:
+                data_dict['visibility'] = visibility
+        else:
+            data_dict['visibility'] = constants.DataRequestState.visible.name
 
         if organization_id:
-            data_dict["organization_id"] = organization_id
+            data_dict['organization_id'] = organization_id
 
         if user_id:
-            data_dict["user_id"] = user_id
+            data_dict['user_id'] = user_id
+
 
         sort = request.args.get("sort", "desc")
         sort = sort if sort in ["asc", "desc"] else "desc"
         if sort is not None:
             data_dict["sort"] = sort
 
-        tk.check_access(constants.LIST_DATAREQUESTS, context, data_dict)
+        tk.check_access(constants.DATAREQUEST_INDEX, context, data_dict)
         datarequests_list = tk.get_action(constants.LIST_DATAREQUESTS)(
             context, data_dict
         )
 
         g.filters = [(tk._("Newest"), "desc"), (tk._("Oldest"), "asc")]
-        g.sort = sort
-        g.q = q
-        g.organization = organization_id
-        g.state = state
         g.datarequest_count = datarequests_list["count"]
         g.datarequests = datarequests_list["result"]
         g.search_facets = datarequests_list["facets"]
         g.page = helpers.Page(
             collection=datarequests_list["result"],
             page=page,
-            url=functools.partial(pager_url, state, sort),
+            url=pager_url,
             item_count=datarequests_list["count"],
             items_per_page=limit,
         )
         g.facet_titles = {
             "state": tk._("State"),
         }
-
+        if is_sysadmin:
+            g.facet_titles['visibility'] = tk._('Visibility')
         # Organization facet cannot be shown when the user is viewing an org
         if include_organization_facet is True:
             g.facet_titles["organization"] = tk._("Organizations")
@@ -190,11 +193,8 @@ def index():
 
 def _process_post(action, context):
     # If the user has submitted the form, the data request must be created
-    data_dict = {}
-    data_dict["title"] = request.form.get("title", "")
-    data_dict["description"] = request.form.get("description", "")
-    data_dict["organization_id"] = request.form.get("organization_id", "")
-
+    data_dict = collections.defaultdict(str,[ (k,v) for k, v in request.form.items() if k != 'id'])
+    data_dict['organization_id'] = ''
     if action == constants.UPDATE_DATAREQUEST:
         data_dict["id"] = request.form.get("id", "")
 
@@ -277,7 +277,8 @@ def update(id):
         g.datarequest = tk.get_action(constants.SHOW_DATAREQUEST)(context, data_dict)
         g.original_title = g.datarequest.get("title")
         if request.method == "POST":
-            id = _process_post(constants.CREATE_DATAREQUEST, context)
+            id = _process_post(constants.UPDATE_DATAREQUEST, context)
+            
             return h.redirect_to(h.url_for('datarequests_show', id=id))
         return tk.render("datarequests/edit.html")
     except tk.ObjectNotFound as e:

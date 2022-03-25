@@ -66,6 +66,10 @@ def list_datarequest_comments(context, data_dict):
 
 
 @tk.auth_allow_anonymous_access
+def datarequest_index(context, data_dict):
+    return {'success': True}
+
+@tk.auth_allow_anonymous_access
 def show_datarequest_comment(context, data_dict):
     return {"success": True}
 

@@ -14,6 +14,7 @@
 
 # You should have received a copy of the GNU Affero General Public License
 # along with CKAN Data Requests Extension. If not, see <http://www.gnu.org/licenses/>.
+import enum
 
 DATAREQUESTS_MAIN_PATH = "datarequest"
 CREATE_DATAREQUEST = "create_datarequest"
@@ -33,3 +34,8 @@ NAME_MAX_LENGTH = 100
 DESCRIPTION_MAX_LENGTH = 1000
 COMMENT_MAX_LENGTH = DESCRIPTION_MAX_LENGTH
 DATAREQUESTS_PER_PAGE = 10
+DATAREQUEST_INDEX = 'datarequest_index'
+
+class DataRequestState(enum.Enum):
+    hidden = 0
+    visible = 1
