@@ -488,7 +488,10 @@ def list_datarequests(context, data_dict):
             else:
                 no_processed_organization_facet[data_req.organization_id] = 1
 
-        no_processed_state_facet[data_req.status] += 1
+        if data_req.status:
+            no_processed_state_facet[data_req.status] += 1
+        else:
+            no_processed_state_facet['OPEN'] += 1
         visibility = _get_visibility_from_code(data_req.visibility)
         no_processed_visibility_facet[visibility] += 1
 
