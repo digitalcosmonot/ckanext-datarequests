@@ -227,8 +227,10 @@ def new():
         tk.check_access(constants.CREATE_DATAREQUEST, context, None)
         if request.method == "POST":
             id = _process_post(constants.CREATE_DATAREQUEST, context)
-            return h.redirect_to(h.url_for('datarequests_show', id=id))  
-
+            try:
+                return h.redirect_to(h.url_for('datarequests_show', id=id))  
+            except:
+                eturn tk.render("datarequests/new.html")
         # The form is always rendered
         return tk.render("datarequests/new.html")
 
