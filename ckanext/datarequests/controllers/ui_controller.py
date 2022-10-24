@@ -230,7 +230,7 @@ def new():
             try:
                 return h.redirect_to(h.url_for('datarequests_show', id=id))  
             except:
-                eturn tk.render("datarequests/new.html")
+                return tk.render("datarequests/new.html")
         # The form is always rendered
         return tk.render("datarequests/new.html")
 
